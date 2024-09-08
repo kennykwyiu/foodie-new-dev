@@ -21,7 +21,6 @@ public class StuServiceImpl implements StuService {
     }
 
 
-
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void saveStu() {
@@ -46,4 +45,33 @@ public class StuServiceImpl implements StuService {
     public void deleteStu(int id) {
         stuMapper.deleteByPrimaryKey(id);
     }
+
+    public void saveParent() {
+        Stu stu = new Stu();
+        stu.setName("parent");
+        stu.setAge(19);
+        stuMapper.insert(stu);
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public void saveChildren() {
+        saveChild1();
+        int a = 1 / 0;
+        saveChild2();
+    }
+    public void saveChild1() {
+        Stu stu = new Stu();
+        stu.setName("child-1");
+        stu.setAge(22);
+        stuMapper.insert(stu);
+
+    }
+    public void saveChild2() {
+        Stu stu = new Stu();
+        stu.setName("child-2");
+        stu.setAge(11);
+        stuMapper.insert(stu);
+    }
+
+
 }
