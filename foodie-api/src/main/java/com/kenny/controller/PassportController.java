@@ -1,6 +1,7 @@
 package com.kenny.controller;
 
 import com.kenny.service.UserService;
+import com.kenny.utils.JsonResult;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,16 +17,16 @@ public class PassportController {
     private UserService userService;
 
     @GetMapping("/usernameIsExist")
-    public HttpStatus usernameIsExist(@RequestParam String username) {
+    public JsonResult usernameIsExist(@RequestParam String username) {
         if (StringUtils.isBlank(username)) {
-            return HttpStatus.INTERNAL_SERVER_ERROR;
+            return JsonResult.errorMsg("username cannot be null");
         }
 
         boolean isExist = userService.queryUsernameIsExist(username);
         if (isExist) {
-            return HttpStatus.INTERNAL_SERVER_ERROR;
+            return JsonResult.errorMsg("username is existed");
         }
 
-        return HttpStatus.OK;
+        return JsonResult.ok();
     }
 }
