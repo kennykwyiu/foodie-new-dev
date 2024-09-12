@@ -6,7 +6,7 @@ import com.kenny.pojo.Users;
 
 public interface UserService {
     public boolean queryUsernameIsExist(String username);
-
     public Users createUser(UserBO userBO);
+    public Users queryUserForLogin(String username, String password);
 
 }
