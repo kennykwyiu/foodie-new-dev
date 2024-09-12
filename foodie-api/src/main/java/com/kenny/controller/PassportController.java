@@ -1,13 +1,17 @@
 package com.kenny.controller;
 
 import com.kenny.bo.UserBO;
+import com.kenny.pojo.Users;
 import com.kenny.service.UserService;
 import com.kenny.utils.JsonResult;
+import com.kenny.utils.MD5Utils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.NoSuchAlgorithmException;
 
 @Api(value = "register login", tags = {"api for register and login"})
 @RestController
@@ -30,7 +34,6 @@ public class PassportController {
 
         return JsonResult.ok();
     }
-
     @ApiOperation(value = "user register", notes = "user register", httpMethod = "POST")
     @PostMapping("/register")
     public JsonResult register(@RequestBody UserBO userBO) {
@@ -58,5 +61,26 @@ public class PassportController {
         userService.createUser(userBO);
 
         return JsonResult.ok();
+    }
+
+    @ApiOperation(value = "user login", notes = "user login", httpMethod = "POST")
+    @PostMapping("/login")
+    public JsonResult login(@RequestBody UserBO userBO) throws NoSuchAlgorithmException {
+        String username = userBO.getUsername();
+        String password = userBO.getPassword();
+
+        if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
+            return JsonResult.errorMsg("username or password cannot be empty!");
+        }
+
+        String md5Str = MD5Utils.getMD5Str(password);
+
+        Users users = userService.queryUserForLogin(username, md5Str);
+
+        if (users == null) {
+            return JsonResult.errorMsg("username or password is incorrect!");
+        }
+
+        return JsonResult.ok(users);
     }
 }
