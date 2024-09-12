@@ -3,7 +3,9 @@ package com.kenny.controller;
 import com.kenny.bo.UserBO;
 import com.kenny.pojo.Users;
 import com.kenny.service.UserService;
+import com.kenny.utils.CookieUtils;
 import com.kenny.utils.JsonResult;
+import com.kenny.utils.JsonUtils;
 import com.kenny.utils.MD5Utils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -11,6 +13,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.security.NoSuchAlgorithmException;
 
 @Api(value = "register login", tags = {"api for register and login"})
@@ -65,7 +69,9 @@ public class PassportController {
 
     @ApiOperation(value = "user login", notes = "user login", httpMethod = "POST")
     @PostMapping("/login")
-    public JsonResult login(@RequestBody UserBO userBO) throws NoSuchAlgorithmException {
+    public JsonResult login(@RequestBody UserBO userBO,
+                            HttpServletRequest request,
+                            HttpServletResponse response) throws NoSuchAlgorithmException {
         String username = userBO.getUsername();
         String password = userBO.getPassword();
 
@@ -81,6 +87,21 @@ public class PassportController {
             return JsonResult.errorMsg("username or password is incorrect!");
         }
 
+        users = setNullProperty(users);
+
+        CookieUtils.setCookie(request, response, "user", JsonUtils.objectToJson(users), true);
+
         return JsonResult.ok(users);
+    }
+
+    private Users setNullProperty(Users users) {
+        users.setPassword(null);
+        users.setMobile(null);
+        users.setEmail(null);
+        users.setCreatedTime(null);
+        users.setUpdatedTime(null);
+        users.setBirthday(null);
+
+        return users;
     }
 }
