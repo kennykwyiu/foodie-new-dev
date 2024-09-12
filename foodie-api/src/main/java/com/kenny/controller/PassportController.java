@@ -40,7 +40,9 @@ public class PassportController {
     }
     @ApiOperation(value = "user register", notes = "user register", httpMethod = "POST")
     @PostMapping("/register")
-    public JsonResult register(@RequestBody UserBO userBO) {
+    public JsonResult register(@RequestBody UserBO userBO,
+                               HttpServletRequest request,
+                               HttpServletResponse response) {
         String username = userBO.getUsername();
         String password = userBO.getPassword();
         String confirmPassword = userBO.getConfirmPassword();
@@ -62,7 +64,11 @@ public class PassportController {
             return JsonResult.errorMsg("password is not same with confirmed password!");
         }
 
-        userService.createUser(userBO);
+        Users users = userService.createUser(userBO);
+
+        users = setNullProperty(users);
+
+        CookieUtils.setCookie(request, response, "user", JsonUtils.objectToJson(users), true);
 
         return JsonResult.ok();
     }
