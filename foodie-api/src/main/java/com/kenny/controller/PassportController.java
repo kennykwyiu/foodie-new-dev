@@ -38,6 +38,7 @@ public class PassportController {
 
         return JsonResult.ok();
     }
+
     @ApiOperation(value = "user register", notes = "user register", httpMethod = "POST")
     @PostMapping("/register")
     public JsonResult register(@RequestBody UserBO userBO,
@@ -109,5 +110,20 @@ public class PassportController {
         users.setBirthday(null);
 
         return users;
+    }
+
+    @ApiOperation(value = "User Logout", notes = "User Logout", httpMethod = "POST")
+    @PostMapping("/logout")
+    public JsonResult logout(@RequestParam String userId,
+                             HttpServletRequest request,
+                             HttpServletResponse response) {
+
+        CookieUtils.deleteCookie(request, response, "user");
+
+
+    // TODO User logout, need to clear the shopping cart
+    // TODO In a distributed session, user data needs to be cleared
+
+        return JsonResult.ok();
     }
 }
