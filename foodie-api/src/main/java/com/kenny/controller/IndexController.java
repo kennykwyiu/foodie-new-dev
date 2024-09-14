@@ -7,6 +7,7 @@ import com.kenny.service.CarouselService;
 import com.kenny.service.CategoryService;
 import com.kenny.utils.JsonResult;
 import com.kenny.vo.CategoryVO;
+import com.kenny.vo.NewItemsVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -62,6 +63,20 @@ public class IndexController {
 
         List<CategoryVO> subCatList = categoryService.getSubCatList(rootCatId);
         return  JsonResult.ok(subCatList);
+    }
+
+    @ApiOperation(value = "Retrieve the Latest 6 Items for Each Primary Category", notes = "Retrieve the Latest 6 Items for Each Primary Category", httpMethod = "GET")
+    @GetMapping("/sixNewItems/{rootCatId}")
+    public JsonResult sixNewItems(
+            @ApiParam(name = "rootCatId", value = "Primary category ID", required = true)
+            @PathVariable Integer rootCatId) {
+
+        if (rootCatId == null) {
+            return JsonResult.errorMsg("Category does not exist");
+        }
+
+        List<NewItemsVO> list = categoryService.getSixNewItemsLazy(rootCatId);
+        return JsonResult.ok(list);
     }
 
 }
