@@ -6,12 +6,15 @@ import com.kenny.pojo.Category;
 import com.kenny.service.CarouselService;
 import com.kenny.service.CategoryService;
 import com.kenny.utils.JsonResult;
+import com.kenny.vo.CategoryVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -46,6 +49,19 @@ public class IndexController {
     public JsonResult cats() {
         List<Category> categories = categoryService.queryAllRootLevelCat();
         return JsonResult.ok(categories);
+    }
+
+    @ApiOperation(value = "Get Subcategories of Products", notes = "Get Subcategories of Products", httpMethod = "GET")
+    @GetMapping("/subCat/{rootCatId}")
+    public JsonResult subCat(
+            @ApiParam(name = "rootCatId", value = "Primary category ID", required = true)
+            @PathVariable Integer rootCatId) {
+        if (rootCatId == null) {
+            return JsonResult.errorMsg("Subcategory does not exist");
+        }
+
+        List<CategoryVO> subCatList = categoryService.getSubCatList(rootCatId);
+        return  JsonResult.ok(subCatList);
     }
 
 }
