@@ -1,14 +1,10 @@
 package com.kenny.service.impl;
 
-import com.kenny.mapper.ItemsImgMapper;
-import com.kenny.mapper.ItemsMapper;
-import com.kenny.mapper.ItemsParamMapper;
-import com.kenny.mapper.ItemsSpecMapper;
-import com.kenny.pojo.Items;
-import com.kenny.pojo.ItemsImg;
-import com.kenny.pojo.ItemsParam;
-import com.kenny.pojo.ItemsSpec;
+import com.kenny.enums.CommentLevel;
+import com.kenny.mapper.*;
+import com.kenny.pojo.*;
 import com.kenny.service.ItemService;
+import com.kenny.vo.CommentLevelCountsVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -28,6 +24,8 @@ public class ItemServiceImpl implements ItemService {
     private ItemsSpecMapper itemsSpecMapper;
     @Autowired
     private ItemsParamMapper itemsParamMapper;
+    @Autowired
+    private ItemsCommentsMapper itemsCommentsMapper;
 
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
@@ -52,6 +50,7 @@ public class ItemServiceImpl implements ItemService {
         return itemsSpecMapper.selectByExample(itemsSpecExp);
     }
 
+    @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public ItemsParam queryItemParam(String itemId) {
         Example itemsParamExp = new Example(ItemsParam.class);
@@ -59,5 +58,17 @@ public class ItemServiceImpl implements ItemService {
         criteria.andEqualTo("itemId", itemId);
 
         return itemsParamMapper.selectOneByExample(itemsParamExp);
+    }
+
+
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer getCommentCounts(String itemId, Integer level) {
+        ItemsComments condition = new ItemsComments();
+        condition.setItemId(itemId);
+        if (level != null) {
+            condition.setCommentLevel(level);
+        }
+        return itemsCommentsMapper.selectCount(condition);
     }
 }
