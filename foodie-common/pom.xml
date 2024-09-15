@@ -19,4 +19,22 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <dependencies>
+<!--        &lt;!&ndash; https://mvnrepository.com/artifact/de.mkammerer/argon2-jvm &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>de.mkammerer</groupId>-->
+<!--            <artifactId>argon2-jvm</artifactId>-->
+<!--            <version>2.11</version>-->
+<!--        </dependency>-->
+
+        <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk18on -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk18on</artifactId>
+            <version>1.78.1</version>
+        </dependency>
+
+
+    </dependencies>
+
 </project>
