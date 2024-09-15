@@ -6,6 +6,7 @@ import com.kenny.pojo.ItemsParam;
 import com.kenny.pojo.ItemsSpec;
 import com.kenny.service.ItemService;
 import com.kenny.utils.JsonResult;
+import com.kenny.vo.CommentLevelCountsVO;
 import com.kenny.vo.ItemInfoVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -14,10 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -51,6 +49,21 @@ public class ItemsController {
         itemInfoVO.setItemParams(itemsParam);
 
         return JsonResult.ok(itemInfoVO);
+    }
+
+    @ApiOperation(value = "Retrieve Product Rating Level", notes = "Retrieve Product Rating Level", httpMethod = "GET")
+    @GetMapping("/commentLevel")
+    public JsonResult commentLevel(
+            @ApiParam(name = "itemId", value = "product id", required = true)
+            @RequestParam String itemId) {
+
+        if (StringUtils.isBlank(itemId)) {
+            return JsonResult.errorMsg(null);
+        }
+
+        CommentLevelCountsVO countsVO = itemService.queryCommentCounts(itemId);
+
+        return JsonResult.ok(countsVO);
     }
 
 }
