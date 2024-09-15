@@ -33,6 +33,28 @@ public class Argon2Utils {
         return Hex.toHexString(salt) + Hex.toHexString(result);
     }
 
+    public static boolean verifyPassword(String password, String hashedPassword) {
+        byte[] hashedPasswordBytes = Hex.decode(hashedPassword.substring(32));
+        byte[] salt = Hex.decode(hashedPassword.substring(0, 32)); // Extract salt
+
+        Argon2Parameters.Builder builder = new Argon2Parameters.Builder(Argon2Parameters.ARGON2_i)
+                .withVersion(Argon2Parameters.ARGON2_VERSION_13)
+                .withMemoryAsKB(MEM_LIMIT) // Should match the memory cost used during hashing
+                .withParallelism(PARALLELISM)
+                .withIterations(ITERATIONS) // Should match the iterations used during hashing
+                .withSalt(salt);  // Extract the original salt from the hashed password
+
+        Argon2BytesGenerator verifier = new Argon2BytesGenerator();
+        verifier.init(builder.build());
+
+        byte[] passwordBytes = password.getBytes(StandardCharsets.UTF_8);
+        byte[] testHash = new byte[HASH_LENGTH];
+        verifier.generateBytes(passwordBytes, testHash, 0, HASH_LENGTH);
+
+        // Compare the generated hash with the stored hashed password bytes
+        return Arrays.equals(hashedPasswordBytes, testHash);
+    }
+
     private static byte[] generateSalt16Byte() {
         SecureRandom secureRandom = new SecureRandom();
         byte[] salt = new byte[16];
@@ -40,4 +62,12 @@ public class Argon2Utils {
         return salt;
     }
 
+    public static void main(String[] args) {
+        String password = "123456";
+        String hashedPassword = hashPassword(password);
+        System.out.println("Hashed Password: " + hashedPassword);
+
+        boolean isValid = verifyPassword(password, hashedPassword);
+        System.out.println("Is Password Valid? " + isValid);
+    }
 }
