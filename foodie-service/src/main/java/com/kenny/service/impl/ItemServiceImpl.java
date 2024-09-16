@@ -1,17 +1,24 @@
 package com.kenny.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.kenny.enums.CommentLevel;
 import com.kenny.mapper.*;
 import com.kenny.pojo.*;
 import com.kenny.service.ItemService;
+import com.kenny.utils.DesensitizationUtil;
+import com.kenny.utils.PagedGridResult;
 import com.kenny.vo.CommentLevelCountsVO;
+import com.kenny.vo.ItemCommentVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ItemServiceImpl implements ItemService {
@@ -26,6 +33,8 @@ public class ItemServiceImpl implements ItemService {
     private ItemsParamMapper itemsParamMapper;
     @Autowired
     private ItemsCommentsMapper itemsCommentsMapper;
+    @Autowired
+    private ItemsMapperCustom itemsMapperCustom;
 
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
@@ -75,6 +84,38 @@ public class ItemServiceImpl implements ItemService {
         countsVO.setBadCounts(badCounts);
 
         return countsVO;
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public PagedGridResult queryPagedComments(String itemId,
+                                              Integer level,
+                                              Integer page,
+                                              Integer pageSize) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("itemId", itemId);
+        map.put("level", level);
+
+        PageHelper.startPage(page, pageSize);
+        List<ItemCommentVO> list = itemsMapperCustom.queryItemComments(map);
+        for (ItemCommentVO itemCommentVO : list) {
+            String commonDisplay = DesensitizationUtil.commonDisplay(itemCommentVO.getNickname());
+            itemCommentVO.setNickname(commonDisplay);
+        }
+
+        PagedGridResult grid = setterPagedGrid(page, list);
+
+        return grid;
+    }
+
+    private static PagedGridResult setterPagedGrid(Integer page, List<ItemCommentVO> list) {
+        PageInfo<?> pageList = new PageInfo<>(list);
+        PagedGridResult grid = new PagedGridResult();
+        grid.setPage(page);
+        grid.setRows(list);
+        grid.setTotal(pageList.getPages());
+        grid.setRecords(pageList.getTotal());
+        return grid;
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
