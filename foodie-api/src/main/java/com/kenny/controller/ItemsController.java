@@ -6,6 +6,7 @@ import com.kenny.pojo.ItemsParam;
 import com.kenny.pojo.ItemsSpec;
 import com.kenny.service.ItemService;
 import com.kenny.utils.JsonResult;
+import com.kenny.utils.PagedGridResult;
 import com.kenny.vo.CommentLevelCountsVO;
 import com.kenny.vo.ItemInfoVO;
 import io.swagger.annotations.Api;
@@ -22,7 +23,7 @@ import java.util.List;
 @Api(value = "Product API", tags = {"Related APIs for displaying product information"})
 @RestController
 @RequestMapping("items")
-public class ItemsController {
+public class ItemsController extends BaseController {
     @Autowired
     private ItemService itemService;
 
@@ -66,4 +67,35 @@ public class ItemsController {
         return JsonResult.ok(countsVO);
     }
 
+    @ApiOperation(value = "Retrieve Product Reviews", notes = "Retrieve Product Reviews", httpMethod = "GET")
+    @GetMapping("/comments")
+    public JsonResult comments(
+            @ApiParam(name = "itemId", value = "Product ID", required = true)
+            @RequestParam String itemId,
+            @ApiParam(name = "level", value = "Rating level", required = false)
+            @RequestParam Integer level,
+            @ApiParam(name = "page", value = "Next page to query", required = false)
+            @RequestParam Integer page,
+            @ApiParam(name = "pageSize", value = "Number of items displayed per page", required = false)
+            @RequestParam Integer pageSize) {
+
+        if (StringUtils.isBlank(itemId)) {
+            return JsonResult.errorMsg(null);
+        }
+
+        if (page == null) {
+            page = 1;
+        }
+
+        if (pageSize == null) {
+            pageSize = COMMON_PAGE_SIZE;
+        }
+
+        PagedGridResult grid = itemService.queryPagedComments(itemId,
+                level,
+                page,
+                pageSize);
+
+        return JsonResult.ok(grid);
+    }
 }
