@@ -19,4 +19,8 @@ public interface ItemService {
                                               Integer level,
                                               Integer page,
                                               Integer pageSize);
+    public PagedGridResult searchItems(String keywords,
+                                              String sort,
+                                              Integer page,
+                                              Integer pageSize);
 }

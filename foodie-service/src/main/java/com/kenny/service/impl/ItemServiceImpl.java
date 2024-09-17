@@ -10,6 +10,7 @@ import com.kenny.utils.DesensitizationUtil;
 import com.kenny.utils.PagedGridResult;
 import com.kenny.vo.CommentLevelCountsVO;
 import com.kenny.vo.ItemCommentVO;
+import com.kenny.vo.SearchItemsVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -107,8 +108,23 @@ public class ItemServiceImpl implements ItemService {
 
         return grid;
     }
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public PagedGridResult searchItems(String keywords,
+                                       String sort,
+                                       Integer page,
+                                       Integer pageSize) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("keywords", keywords);
+        map.put("sort", sort);
 
-    private static PagedGridResult setterPagedGrid(Integer page, List<ItemCommentVO> list) {
+        PageHelper.startPage(page, pageSize);
+        List<SearchItemsVO> list = itemsMapperCustom.searchItems(map);
+
+        return setterPagedGrid(page, list);
+    }
+
+    private static PagedGridResult setterPagedGrid(Integer page, List<?> list) {
         PageInfo<?> pageList = new PageInfo<>(list);
         PagedGridResult grid = new PagedGridResult();
         grid.setPage(page);
