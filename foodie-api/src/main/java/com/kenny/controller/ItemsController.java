@@ -98,4 +98,31 @@ public class ItemsController extends BaseController {
 
         return JsonResult.ok(grid);
     }
+
+    @ApiOperation(value = "Search Product List", notes = "Search Product List", httpMethod = "GET")
+    @GetMapping("/search")
+    public JsonResult search(
+            @ApiParam(name = "keywords", value = "Keywords", required = true)
+            @RequestParam String keywords,
+            @ApiParam(name = "sort", value = "Sorting", required = false)
+            @RequestParam String sort,
+            @ApiParam(name = "page", value = "Next page to query", required = false)
+            @RequestParam Integer page,
+            @ApiParam(name = "pageSize", value = "Number of items displayed per page", required = false)
+            @RequestParam Integer pageSize) {
+        if (StringUtils.isBlank(keywords)) {
+            return JsonResult.errorMsg(null);
+        }
+
+        if (page == null) {
+            page = 1;
+        }
+
+        if (pageSize == null) {
+            pageSize = PAGE_SIZE;
+        }
+
+        PagedGridResult grid = itemService.searchItems(keywords, sort, page, pageSize);
+        return JsonResult.ok(grid);
+    }
 }
