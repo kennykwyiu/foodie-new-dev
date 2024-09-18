@@ -37,5 +37,20 @@ public class ShopCartController {
         return JsonResult.ok();
     }
 
+    @ApiOperation(value = "Remove Item from Shopping Cart", notes = "Remove Item from Shopping Cart", httpMethod = "POST")
+    @PostMapping("/del")
+    public JsonResult del(@RequestParam String userId,
+                          @RequestParam String itemSpecId,
+                          HttpServletRequest request,
+                          HttpServletResponse response) {
+        if (StringUtils.isBlank(userId) || StringUtils.isBlank(itemSpecId)) {
+            return JsonResult.errorMsg("Parameter cannot be empty");
+        }
+
+    // TODO When a user deletes shopping cart data on the page, if the user is logged in at this time,
+    //  it is necessary to synchronize the deletion of the items in the backend shopping cart.
+
+        return JsonResult.ok();
+    }
 
 }
