@@ -125,4 +125,32 @@ public class ItemsController extends BaseController {
         PagedGridResult grid = itemService.searchItems(keywords, sort, page, pageSize);
         return JsonResult.ok(grid);
     }
+
+    @ApiOperation(value = "Search Product List by Category ID", notes = "Search Product List by Category ID", httpMethod = "GET")
+    @GetMapping("/catItems")
+    public JsonResult catItems(
+            @ApiParam(name = "catId", value = "Third-level category ID", required = true)
+            @RequestParam Integer catId,
+            @ApiParam(name = "sort", value = "Sorting", required = false)
+            @RequestParam String sort,
+            @ApiParam(name = "page", value = "Next page to query", required = false)
+            @RequestParam Integer page,
+            @ApiParam(name = "pageSize", value = "Number of items displayed per page", required = false)
+            @RequestParam Integer pageSize) {
+
+        if (catId == null) {
+            return JsonResult.errorMsg(null);
+        }
+
+        if (page == null) {
+            page = 1;
+        }
+
+        if (pageSize == null) {
+            pageSize = PAGE_SIZE;
+        }
+
+        PagedGridResult grid = itemService.searchItemsByThirdCat(catId, sort, page, pageSize);
+        return JsonResult.ok(grid);
+    }
 }
