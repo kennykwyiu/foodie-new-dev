@@ -9,6 +9,7 @@ import com.kenny.utils.JsonResult;
 import com.kenny.utils.PagedGridResult;
 import com.kenny.vo.CommentLevelCountsVO;
 import com.kenny.vo.ItemInfoVO;
+import com.kenny.vo.ShopcartVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -152,5 +153,18 @@ public class ItemsController extends BaseController {
 
         PagedGridResult grid = itemService.searchItemsByThirdCat(catId, sort, page, pageSize);
         return JsonResult.ok(grid);
+    }
+
+    @ApiOperation(value = "Find the Latest Product Data by Product Specification IDs", notes = "Find the Latest Product Data by Product Specification IDs", httpMethod = "GET")
+    @GetMapping("/refresh")
+    public JsonResult refresh(@ApiParam(name = "itemSpecIds", value = "Concatenated specification IDs", required = true, example = "1001,1003,1005")
+                              @RequestParam String itemSpecIds) {
+        if (StringUtils.isBlank(itemSpecIds)) {
+            return JsonResult.errorMsg("");
+        }
+
+        List<ShopcartVO> list = itemService.queryItemsBySpecIds(itemSpecIds);
+
+        return JsonResult.ok(list);
     }
 }
