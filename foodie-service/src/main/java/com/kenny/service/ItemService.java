@@ -6,6 +6,7 @@ import com.kenny.pojo.ItemsParam;
 import com.kenny.pojo.ItemsSpec;
 import com.kenny.utils.PagedGridResult;
 import com.kenny.vo.CommentLevelCountsVO;
+import com.kenny.vo.ShopcartVO;
 
 import java.util.List;
 
@@ -27,4 +28,5 @@ public interface ItemService {
                                               String sort,
                                               Integer page,
                                               Integer pageSize);
+    public List<ShopcartVO> queryItemsBySpecIds(String specIds);
 }
