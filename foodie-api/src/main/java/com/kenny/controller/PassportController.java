@@ -71,6 +71,9 @@ public class PassportController {
 
         CookieUtils.setCookie(request, response, "user", JsonUtils.objectToJson(users), true);
 
+        // TODO Generate user token and store it in the Redis session
+        // TODO Synchronize shopping cart data
+
         return JsonResult.ok();
     }
 
