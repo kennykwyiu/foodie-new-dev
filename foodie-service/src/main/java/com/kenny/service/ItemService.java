@@ -23,4 +23,8 @@ public interface ItemService {
                                               String sort,
                                               Integer page,
                                               Integer pageSize);
+    public PagedGridResult searchItemsByThirdCat(Integer catId,
+                                              String sort,
+                                              Integer page,
+                                              Integer pageSize);
 }
