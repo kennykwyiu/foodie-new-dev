@@ -93,5 +93,21 @@ public class AddressController {
         return JsonResult.ok();
     }
 
+    @ApiOperation(value = "Update User Address", notes = "Update User Address", httpMethod = "POST")
+    @PostMapping("/update")
+    public JsonResult update(@RequestBody AddressBO addressBO) {
 
+        if (StringUtils.isBlank(addressBO.getAddressId())) {
+            return JsonResult.errorMsg("Update address error: addressId cannot be empty");
+        }
+
+        JsonResult checkRes = checkAddress(addressBO);
+        if (checkRes.getStatus() != 200) {
+            return checkRes;
+        }
+
+        addressService.updateUserAddress(addressBO);
+
+        return JsonResult.ok();
+    }
 }
