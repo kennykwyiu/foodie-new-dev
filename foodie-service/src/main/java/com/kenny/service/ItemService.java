@@ -29,4 +29,5 @@ public interface ItemService {
                                               Integer page,
                                               Integer pageSize);
     public List<ShopcartVO> queryItemsBySpecIds(String specIds);
+    public ItemsSpec queryItemSpecById(String specId);
 }
