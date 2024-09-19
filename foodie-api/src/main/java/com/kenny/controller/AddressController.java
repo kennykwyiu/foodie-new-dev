@@ -110,4 +110,32 @@ public class AddressController {
 
         return JsonResult.ok();
     }
+
+    @ApiOperation(value = "Delete User Address", notes = "Delete User Address", httpMethod = "POST")
+    @PostMapping("/delete")
+    public JsonResult delete(
+            @RequestParam String userId,
+            @RequestParam String addressId) {
+
+        if (StringUtils.isBlank(userId) || StringUtils.isBlank(addressId)) {
+            return JsonResult.errorMsg("User ID or Address ID cannot be empty");
+        }
+
+        addressService.deleteUserAddress(userId, addressId);
+        return JsonResult.ok();
+    }
+
+    @ApiOperation(value = "Set Default Address for User", notes = "Set Default Address for User", httpMethod = "POST")
+    @PostMapping("/setDefault")
+    public JsonResult setDefault(
+            @RequestParam String userId,
+            @RequestParam String addressId) {
+
+        if (StringUtils.isBlank(userId) || StringUtils.isBlank(addressId)) {
+            return JsonResult.errorMsg("User ID or Address ID cannot be empty");
+        }
+
+        addressService.updateUserAddressToBeDefault(userId, addressId);
+        return JsonResult.ok();
+    }
 }
