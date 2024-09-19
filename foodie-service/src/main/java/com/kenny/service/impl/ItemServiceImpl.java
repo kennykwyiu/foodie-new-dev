@@ -3,6 +3,7 @@ package com.kenny.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.kenny.enums.CommentLevel;
+import com.kenny.enums.YesOrNo;
 import com.kenny.mapper.*;
 import com.kenny.pojo.*;
 import com.kenny.service.ItemService;
@@ -149,6 +150,15 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemsSpec queryItemSpecById(String specId) {
         return itemsSpecMapper.selectByPrimaryKey(specId);
+    }
+
+    @Override
+    public String queryItemMainImgById(String itemId) {
+        ItemsImg itemsImg = new ItemsImg();
+        itemsImg.setItemId(itemId);
+        itemsImg.setIsMain(YesOrNo.YES.type);
+        ItemsImg result = itemsImgMapper.selectOne(itemsImg);
+        return result != null ? result.getUrl() : "";
     }
 
     private static PagedGridResult setterPagedGrid(Integer page, List<?> list) {
