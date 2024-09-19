@@ -1,6 +1,7 @@
 package com.kenny.service.impl;
 
 import com.kenny.bo.AddressBO;
+import com.kenny.enums.YesOrNo;
 import com.kenny.mapper.UserAddressMapper;
 import com.kenny.pojo.UserAddress;
 import com.kenny.service.AddressService;
@@ -64,5 +65,36 @@ public class AddressServiceImpl implements AddressService {
         pendingAddress.setId(addressId);
         pendingAddress.setUpdatedTime(new Date());
         userAddressMapper.updateByPrimaryKeySelective(pendingAddress);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void deleteUserAddress(String userId, String addressId) {
+
+        UserAddress address = new UserAddress();
+        address.setId(addressId);
+        address.setUserId(userId);
+
+        userAddressMapper.delete(address);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void updateUserAddressToBeDefault(String userId, String addressId) {
+        UserAddress queryAddress = new UserAddress();
+        queryAddress.setUserId(userId);
+        queryAddress.setIsDefault(YesOrNo.YES.type);
+
+        List<UserAddress> list = userAddressMapper.select(queryAddress);
+        for (UserAddress userAddress : list) {
+            userAddress.setIsDefault(YesOrNo.NO.type);
+            userAddressMapper.updateByPrimaryKeySelective(userAddress);
+        }
+
+        UserAddress defaultAddress = new UserAddress();
+        defaultAddress.setId(addressId);
+        defaultAddress.setUserId(userId);
+        defaultAddress.setIsDefault(YesOrNo.YES.type);
+        userAddressMapper.updateByPrimaryKeySelective(defaultAddress);
     }
 }
