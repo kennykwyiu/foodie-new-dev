@@ -32,4 +32,6 @@ public interface ItemService {
     public ItemsSpec queryItemSpecById(String specId);
 
     public String queryItemMainImgById(String itemId);
+
+    public void decreaseItemSpecStock(String itemSpecId, int buyCounts);
 }

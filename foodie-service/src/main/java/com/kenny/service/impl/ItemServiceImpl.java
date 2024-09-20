@@ -147,6 +147,7 @@ public class ItemServiceImpl implements ItemService {
         return itemsMapperCustom.queryItemsBySpecIds(specIdsList);
     }
 
+    @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public ItemsSpec queryItemSpecById(String specId) {
         return itemsSpecMapper.selectByPrimaryKey(specId);
@@ -159,6 +160,33 @@ public class ItemServiceImpl implements ItemService {
         itemsImg.setIsMain(YesOrNo.YES.type);
         ItemsImg result = itemsImgMapper.selectOne(itemsImg);
         return result != null ? result.getUrl() : "";
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void decreaseItemSpecStock(String itemSpecId, int buyCounts) {
+
+        // synchronized not recommended, ineffective in a cluster, and can degrade performance
+        // Locking the database: not recommended, as it can decrease database performance
+        // Distributed locks with Zookeeper or Redis
+
+        // lockUtil.getLock(); -- Acquire lock
+
+        // 1. Query stock
+        // int stock = 10;
+
+        // 2. Check the stock, whether it can be reduced to below 0
+        // if (stock - buyCounts < 0) {
+                // Notify the user that the stock is insufficient
+                // 10 - 3 - 3 - 5 = -1
+        // }
+
+        // lockUtil.unLock(); -- Release lock
+
+        int result = itemsMapperCustom.decreaseItemSpecStock(itemSpecId, buyCounts);
+        if (result != 1) {
+            throw new RuntimeException("Order creation failed, reason: Insufficient stock!");
+        }
     }
 
     private static PagedGridResult setterPagedGrid(Integer page, List<?> list) {
