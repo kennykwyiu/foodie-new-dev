@@ -1,12 +1,13 @@
 package com.kenny.controller;
 
 import com.kenny.bo.SubmitOrderBO;
+import com.kenny.enums.OrderStatusEnum;
 import com.kenny.service.OrderService;
-import com.kenny.utils.CookieUtils;
 import com.kenny.utils.JsonResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,6 +47,11 @@ public class OrdersController extends BaseController {
 
 
         return JsonResult.ok(orderId);
+    }
+    @PostMapping("notifyMerchantOrderPaid")
+    public Integer notifyMerchantOrderPaid(String merchantOrderId) {
+        orderService.updateOrderStatus(merchantOrderId, OrderStatusEnum.WAIT_DELIVER.type);
+        return HttpStatus.OK.value();
     }
 
 }
