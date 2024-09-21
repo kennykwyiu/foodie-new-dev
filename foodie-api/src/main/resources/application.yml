@@ -1,0 +1,63 @@
+############################################################
+#
+# Web Access Port Number Agreement: 8088
+#
+############################################################
+server:
+  port: 8088
+  tomcat:
+    uri-encoding: UTF-8
+  max-http-header-size: 80KB
+
+############################################################
+#
+# Configure data source information
+#
+############################################################
+spring:
+#  profiles:
+#    active: dev
+  datasource:                                         # Data source related configuration
+    type: com.zaxxer.hikari.HikariDataSource          # Data source type: HikariCP
+    driver-class-name: com.mysql.jdbc.Driver          # MySQL Driver
+    url: jdbc:mysql://localhost:3306/foodie-shop-dev?useSSL=false&useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
+    username: root
+    password: P@ssw0rd
+    hikari:
+      connection-timeout: 30000       # Maximum time to wait for a connection from the pool (in milliseconds), SQLException occurs if no connection is available after this time, default: 30 seconds
+      minimum-idle: 5                 # Minimum number of idle connections
+      maximum-pool-size: 20           # Maximum number of connections
+      auto-commit: true               # Auto commit
+      idle-timeout: 600000            # Maximum lifetime of a connection (in milliseconds), connection is released if it exceeds this timeout, default: 10 minutes
+      pool-name: DataSourceHikariCP   # Connection pool name
+      max-lifetime: 1800000           # Maximum lifetime of a connection (in milliseconds), connection is released if it is timed out and not used, default: 30 minutes (1800000ms)
+      connection-test-query: SELECT 1
+  servlet:
+    multipart:
+      max-file-size: 512000     # File upload size limit set to 500kb
+      max-request-size: 512000  # Request size limit set to 500kb
+
+############################################################
+#
+# MyBatis Configuration
+#
+############################################################
+mybatis:
+  type-aliases-package: com.kenny.pojo          # Package path where all POJO classes are located
+  mapper-locations: classpath:mapper/*.xml      # Mapper mapping files
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+############################################################
+#
+# MyBatis Mapper Configuration
+#
+############################################################
+# Common Mapper Configuration
+mapper:
+  mappers: com.kenny.my.mapper.MyMapper
+  not-empty: false    # When performing database operations, determine whether the expression username != null should append username != ''
+  identity: MYSQL
+pagehelper:
+  helperDialect: mysql
+  supportMethodsArguments: true
