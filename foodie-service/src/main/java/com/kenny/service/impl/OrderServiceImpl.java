@@ -34,7 +34,7 @@ public class OrderServiceImpl implements OrderService {
     private Sid sid;
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
-    public void createOrder(SubmitOrderBO submitOrderBO) {
+    public String createOrder(SubmitOrderBO submitOrderBO) {
         String userId = submitOrderBO.getUserId();
         String addressId = submitOrderBO.getAddressId();
         String itemSpecIds = submitOrderBO.getItemSpecIds();
@@ -121,5 +121,6 @@ public class OrderServiceImpl implements OrderService {
 
         // 5. Build custom order VO
 
+        return orderId;
     }
 }
