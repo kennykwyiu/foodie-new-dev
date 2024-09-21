@@ -2,6 +2,7 @@ package com.kenny.controller;
 
 import com.kenny.bo.SubmitOrderBO;
 import com.kenny.enums.OrderStatusEnum;
+import com.kenny.pojo.OrderStatus;
 import com.kenny.service.OrderService;
 import com.kenny.utils.JsonResult;
 import com.kenny.vo.MerchantOrdersVO;
@@ -77,6 +78,13 @@ public class OrdersController extends BaseController {
     public Integer notifyMerchantOrderPaid(String merchantOrderId) {
         orderService.updateOrderStatus(merchantOrderId, OrderStatusEnum.WAIT_DELIVER.type);
         return HttpStatus.OK.value();
+    }
+
+    @PostMapping("getPaidOrderInfo")
+    public JsonResult getPaidOrderInfo(String orderId) {
+
+        OrderStatus orderStatus = orderService.queryOrderStatusInfo(orderId);
+        return JsonResult.ok(orderStatus);
     }
 
 }
