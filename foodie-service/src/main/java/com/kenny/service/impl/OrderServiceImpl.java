@@ -10,6 +10,8 @@ import com.kenny.pojo.*;
 import com.kenny.service.AddressService;
 import com.kenny.service.ItemService;
 import com.kenny.service.OrderService;
+import com.kenny.vo.MerchantOrdersVO;
+import com.kenny.vo.OrderVO;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +36,7 @@ public class OrderServiceImpl implements OrderService {
     private Sid sid;
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
-    public String createOrder(SubmitOrderBO submitOrderBO) {
+    public OrderVO createOrder(SubmitOrderBO submitOrderBO) {
         String userId = submitOrderBO.getUserId();
         String addressId = submitOrderBO.getAddressId();
         String itemSpecIds = submitOrderBO.getItemSpecIds();
@@ -118,10 +120,18 @@ public class OrderServiceImpl implements OrderService {
         orderStatusMapper.insert(waitPayOrderStatus);
 
         // 4. Build merchant order to send to the payment center
+        MerchantOrdersVO merchantOrdersVO = new MerchantOrdersVO();
+        merchantOrdersVO.setMerchantOrderId(orderId);
+        merchantOrdersVO.setMerchantUserId(userId);
+        merchantOrdersVO.setAmount(realPayAmount + postAmount);
+        merchantOrdersVO.setPayMethod(payMethod);
 
         // 5. Build custom order VO
+        OrderVO orderVO = new OrderVO();
+        orderVO.setOrderId(orderId);
+        orderVO.setMerchantOrdersVO(merchantOrdersVO);
 
-        return orderId;
+        return orderVO;
     }
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
