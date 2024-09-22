@@ -10,6 +10,7 @@ import com.kenny.pojo.*;
 import com.kenny.service.AddressService;
 import com.kenny.service.ItemService;
 import com.kenny.service.OrderService;
+import com.kenny.utils.DateUtil;
 import com.kenny.vo.MerchantOrdersVO;
 import com.kenny.vo.OrderVO;
 import org.n3r.idworker.Sid;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -148,5 +150,33 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderStatus queryOrderStatusInfo(String orderId) {
         return orderStatusMapper.selectByPrimaryKey(orderId);
+    }
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void closeOrder() {
+        // Query all unpaid orders, check if the time has exceeded (1 day), and close the transaction if it has
+        OrderStatus queryOrder = new OrderStatus();
+        queryOrder.setOrderStatus(OrderStatusEnum.WAIT_PAY.type);
+        List<OrderStatus> list = orderStatusMapper.select(queryOrder);
+
+        for (OrderStatus os : list) {
+            // Get the order creation time
+            Date createdTime = os.getCreatedTime();
+            // Compare with the current time
+            int days = DateUtil.daysBetween(createdTime, new Date());
+            if (days >= 1) {
+                // If it has been more than 1 day, close the order
+                doCloseOrder(os.getOrderId());
+            }
+        }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    void doCloseOrder(String orderId) {
+        OrderStatus close = new OrderStatus();
+        close.setOrderId(orderId);
+        close.setOrderStatus(OrderStatusEnum.CLOSE.type);
+        close.setCloseTime(new Date());
+        orderStatusMapper.updateByPrimaryKeySelective(close);
     }
 }

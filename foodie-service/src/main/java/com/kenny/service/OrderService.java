@@ -8,4 +8,7 @@ public interface OrderService {
     public OrderVO createOrder(SubmitOrderBO submitOrderBO);
     public void updateOrderStatus(String orderId, Integer orderStatus);
     public OrderStatus queryOrderStatusInfo(String orderId);
+
+    public void closeOrder();
 }
+
