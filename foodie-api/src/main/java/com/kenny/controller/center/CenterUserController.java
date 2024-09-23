@@ -3,6 +3,7 @@ package com.kenny.controller.center;
 import com.kenny.bo.CenterUserBO;
 import com.kenny.controller.BaseController;
 import com.kenny.pojo.Users;
+import com.kenny.resource.FileUpload;
 import com.kenny.service.center.CenterUserService;
 import com.kenny.utils.CookieUtils;
 import com.kenny.utils.JsonResult;
@@ -36,6 +37,9 @@ public class CenterUserController extends BaseController {
     @Autowired
     private CenterUserService centerUserService;
 
+    @Autowired
+    private FileUpload fileUpload;
+
     @ApiOperation(value = "User avatar update", notes = "User avatar update", httpMethod = "POST")
     @PostMapping("uploadFace")
     public JsonResult uploadFace(@ApiParam(name = "userId", value = "User ID", required = true)
@@ -44,7 +48,8 @@ public class CenterUserController extends BaseController {
                                  MultipartFile file,
                                  HttpServletRequest request, HttpServletResponse response) {
 
-        String fileSpace = IMAGE_USER_FACE_LOCATION;
+//        String fileSpace = IMAGE_USER_FACE_LOCATION;
+        String fileSpace = fileUpload.getImageUserFaceLocation();
 
         String uploadPathPrefix = File.separator + userId;
 
