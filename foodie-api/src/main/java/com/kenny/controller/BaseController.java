@@ -27,9 +27,10 @@ public class BaseController {
 //            File.separator + "faces";
     //public static final String IMAGE_USER_FACE_LOCATION = "C:\Users\yaowi\Desktop\java\images\foodie\faces";
 
-    public static final String IMAGE_USER_FACE_LOCATION = "C:" + File.separator + "Users" + File.separator + "yaowi" +
-            File.separator + "Desktop" + File.separator + "java" +
-            File.separator + "images" + File.separator + "foodie" +
-            File.separator + "faces";
+//    public static final String IMAGE_USER_FACE_LOCATION = "C:" +
+//                                                        File.separator + "Users" + File.separator + "yaowi" +
+//                                                        File.separator + "Desktop" + File.separator + "java" +
+//                                                        File.separator + "images" + File.separator + "foodie" +
+//                                                        File.separator + "faces";
 
 }
