@@ -10,6 +10,7 @@ import com.kenny.utils.JsonUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -23,6 +24,7 @@ import javax.validation.Valid;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +54,8 @@ public class CenterUserController extends BaseController {
             try {
                 String filename = file.getOriginalFilename();
                 if (StringUtils.isNoneBlank(filename)) {
+
+                    // face-{userId}.png <- save as this name
                     String[] fileNameArr = filename.split("\\.");
                     String suffix = fileNameArr[fileNameArr.length - 1];
                     if (!suffix.equalsIgnoreCase("png") &&
@@ -59,12 +63,30 @@ public class CenterUserController extends BaseController {
                             !suffix.equalsIgnoreCase("jpeg")) {
                         return JsonResult.errorMsg("Incorrect image format!");
                     }
+                    String newFileName = "face-" + userId + "." + suffix;
+                    String finalFacePath = fileSpace + uploadPathPrefix + File.separator + newFileName;
 
+                    File outFile = new File(finalFacePath);
+                    if (outFile.getParentFile() != null) {
+                        outFile.getParentFile().mkdirs();
+                    }
+
+                    fileOutputStream = new FileOutputStream(outFile);
+                    InputStream inputStream = file.getInputStream();
+                    IOUtils.copy(inputStream, fileOutputStream);
                 }
 
             } catch (IOException e) {
                 throw new RuntimeException(e);
             } finally {
+                if (fileOutputStream != null) {
+                    try {
+                        fileOutputStream.flush();
+                        fileOutputStream.close();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
             }
 
 
