@@ -6,6 +6,7 @@ import com.kenny.pojo.Users;
 import com.kenny.resource.FileUpload;
 import com.kenny.service.center.CenterUserService;
 import com.kenny.utils.CookieUtils;
+import com.kenny.utils.DateUtil;
 import com.kenny.utils.JsonResult;
 import com.kenny.utils.JsonUtils;
 import io.swagger.annotations.Api;
@@ -63,6 +64,8 @@ public class CenterUserController extends BaseController {
                     // face-{userId}.png <- save as this name
                     String[] fileNameArr = filename.split("\\.");
                     String suffix = fileNameArr[fileNameArr.length - 1];
+
+                    // // .sh .php  -> prevent penetration by hacker
                     if (!suffix.equalsIgnoreCase("png") &&
                             !suffix.equalsIgnoreCase("jpg") &&
                             !suffix.equalsIgnoreCase("jpeg")) {
@@ -70,6 +73,8 @@ public class CenterUserController extends BaseController {
                     }
                     String newFileName = "face-" + userId + "." + suffix;
                     String finalFacePath = fileSpace + uploadPathPrefix + File.separator + newFileName;
+
+                    uploadPathPrefix += File.separator + newFileName;
 
                     File outFile = new File(finalFacePath);
                     if (outFile.getParentFile() != null) {
@@ -98,6 +103,16 @@ public class CenterUserController extends BaseController {
         } else {
             return JsonResult.errorMsg("File cannot be empty!");
         }
+
+        String imageServerUrl = fileUpload.getImageServerUrl();
+        String  finalServerUrl = imageServerUrl + uploadPathPrefix + "?t=" + DateUtil.getCurrentDateString(DateUtil.DATE_PATTERN);
+
+        Users userResult = centerUserService.updateUserFace(userId, finalServerUrl);
+
+        userResult = setNullProperty(userResult);
+        CookieUtils.setCookie(request, response, "user", JsonUtils.objectToJson(userResult), true);
+
+        // TODO: Future improvement - Add token authentication, integrate with Redis for distributed sessions
 
 
         return JsonResult.ok();
