@@ -65,6 +65,12 @@ public class MyOrdersController extends BaseController {
         return JsonResult.ok();
     }
 
-
+    public JsonResult checkUserOrder(String userId, String orderId) {
+        Orders order = myOrdersService.queryMyOrder(userId, orderId);
+        if (order == null) {
+            return JsonResult.errorMsg("Order does not exist!");
+        }
+        return JsonResult.ok(order);
+    }
 
 }
