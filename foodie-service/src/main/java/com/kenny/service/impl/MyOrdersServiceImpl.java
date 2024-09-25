@@ -2,22 +2,23 @@ package com.kenny.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.kenny.mapper.CategoryMapper;
-import com.kenny.mapper.CategoryMapperCustom;
+import com.kenny.enums.OrderStatusEnum;
+import com.kenny.enums.YesOrNo;
+import com.kenny.mapper.OrderStatusMapper;
+import com.kenny.mapper.OrdersMapper;
 import com.kenny.mapper.OrdersMapperCustom;
-import com.kenny.pojo.Category;
-import com.kenny.service.CategoryService;
+import com.kenny.pojo.OrderStatus;
+import com.kenny.pojo.Orders;
 import com.kenny.service.MyOrdersService;
 import com.kenny.utils.PagedGridResult;
-import com.kenny.vo.CategoryVO;
 import com.kenny.vo.MyOrdersVO;
-import com.kenny.vo.NewItemsVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,12 @@ import java.util.Map;
 public class MyOrdersServiceImpl implements MyOrdersService {
     @Autowired
     public OrdersMapperCustom ordersMapperCustom;
+
+    @Autowired
+    public OrdersMapper ordersMapper;
+
+    @Autowired
+    public OrderStatusMapper orderStatusMapper;
 
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
@@ -47,7 +54,7 @@ public class MyOrdersServiceImpl implements MyOrdersService {
         return setterPagedGrid(list, page);
     }
 
-        private PagedGridResult setterPagedGrid(List<?> list, Integer page) {
+    private PagedGridResult setterPagedGrid(List<?> list, Integer page) {
         PageInfo<?> pageList = new PageInfo<>(list);
         PagedGridResult grid = new PagedGridResult();
         grid.setPage(page);
@@ -56,4 +63,20 @@ public class MyOrdersServiceImpl implements MyOrdersService {
         grid.setRecords(pageList.getTotal());
         return grid;
     }
+
+    @Transactional(propagation=Propagation.REQUIRED)
+    @Override
+    public void updateDeliverOrderStatus(String orderId) {
+        OrderStatus updateOrder = new OrderStatus();
+        updateOrder.setOrderStatus(OrderStatusEnum.WAIT_RECEIVE.type);
+        updateOrder.setDeliverTime(new Date());
+
+        Example example = new Example(OrderStatus.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("orderId", orderId);
+        criteria.andEqualTo("orderStatus", OrderStatusEnum.WAIT_DELIVER.type);
+        orderStatusMapper.updateByExampleSelective(updateOrder, example);
+    }
+
+
 }

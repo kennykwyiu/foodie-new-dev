@@ -1,6 +1,7 @@
 package com.kenny.service;
 
 import com.kenny.pojo.Category;
+import com.kenny.pojo.Orders;
 import com.kenny.utils.PagedGridResult;
 import com.kenny.vo.CategoryVO;
 import com.kenny.vo.NewItemsVO;
@@ -12,5 +13,8 @@ public interface MyOrdersService {
                                          Integer orderStatus,
                                          Integer page,
                                          Integer pageSize);
+
+    void updateDeliverOrderStatus(String orderId);
+
 }
 
