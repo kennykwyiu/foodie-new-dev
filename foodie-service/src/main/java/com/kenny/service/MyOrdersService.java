@@ -16,5 +16,6 @@ public interface MyOrdersService {
 
     void updateDeliverOrderStatus(String orderId);
 
+    Orders queryMyOrder(String userId, String orderId);
 }
 
