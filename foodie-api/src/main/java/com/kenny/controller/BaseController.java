@@ -8,8 +8,8 @@ import java.io.File;
 public class BaseController {
 
     // Payment center's invocation URL
-    String paymentUrl = "http://api.z.mukewang.com/foodie-payment/payment/createMerchantOrder"; // Production
-//    String paymentUrl = "http://localhost:8088/foodie-payment/payment/createMerchantOrder"; // Production
+//    String paymentUrl = "http://api.z.mukewang.com/foodie-payment/payment/createMerchantOrder"; // Production
+    String paymentUrl = "http://localhost:8088/foodie-payment/payment/createMerchantOrder"; // Production
 
     // WeChat payment success -> Payment center -> Daily Gourmet Platform
     //                                  |-> Callback notification URL
