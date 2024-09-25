@@ -1,6 +1,7 @@
 package com.kenny.controller.center;
 
 import com.kenny.controller.BaseController;
+import com.kenny.pojo.Orders;
 import com.kenny.pojo.Users;
 import com.kenny.service.MyOrdersService;
 import com.kenny.service.center.CenterUserService;
@@ -49,6 +50,21 @@ public class MyOrdersController extends BaseController {
                 pageSize);
         return JsonResult.ok(grid);
     }
+
+    // Since there is no backend for merchant delivery, this endpoint is used for simulation purposes only
+    @ApiOperation(value="Merchant Delivery", notes="Merchant Delivery", httpMethod = "GET")
+    @GetMapping("/deliver")
+    public JsonResult deliver(
+            @ApiParam(name = "orderId", value = "Order ID", required = true)
+            @RequestParam String orderId) throws Exception {
+
+        if (StringUtils.isBlank(orderId)) {
+            return JsonResult.errorMsg("Order ID cannot be empty");
+        }
+        myOrdersService.updateDeliverOrderStatus(orderId);
+        return JsonResult.ok();
+    }
+
 
 
 }
