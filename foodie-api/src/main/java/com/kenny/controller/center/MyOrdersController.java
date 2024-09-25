@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @Api(value = "My Orders in User Center",
@@ -62,6 +63,27 @@ public class MyOrdersController extends BaseController {
             return JsonResult.errorMsg("Order ID cannot be empty");
         }
         myOrdersService.updateDeliverOrderStatus(orderId);
+        return JsonResult.ok();
+    }
+
+    @ApiOperation(value="Confirm Receipt by User", notes="Confirm Receipt by User", httpMethod = "POST")
+    @PostMapping("/confirmReceive")
+    public JsonResult confirmReceive(
+            @ApiParam(name = "orderId", value = "Order ID", required = true)
+            @RequestParam String orderId,
+            @ApiParam(name = "userId", value = "User ID", required = true)
+            @RequestParam String userId) throws Exception {
+
+        JsonResult checkResult = checkUserOrder(userId, orderId);
+        if (checkResult.getStatus() != HttpStatus.OK.value()) {
+            return checkResult;
+        }
+
+        boolean res = myOrdersService.updateReceiveOrderStatus(orderId);
+        if (!res) {
+            return JsonResult.errorMsg("Failed to confirm order receipt!");
+        }
+
         return JsonResult.ok();
     }
 
