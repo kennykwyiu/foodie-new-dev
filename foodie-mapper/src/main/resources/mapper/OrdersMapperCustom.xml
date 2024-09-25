@@ -30,7 +30,7 @@
             od.created_time as createdTime,
             od.real_pay_amount as realPayAmount,
             od.post_amount as postAmount,
-            os.order_status as orderStatus,
+            os.order_status as orderStatus
 
         FROM orders od
         LEFT JOIN order_status os ON od.id = os.order_id
