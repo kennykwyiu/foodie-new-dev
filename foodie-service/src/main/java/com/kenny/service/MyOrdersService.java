@@ -19,5 +19,7 @@ public interface MyOrdersService {
     Orders queryMyOrder(String userId, String orderId);
 
     boolean updateReceiveOrderStatus(String orderId);
+
+    boolean deleteOrder(String userId, String orderId);
 }
 
