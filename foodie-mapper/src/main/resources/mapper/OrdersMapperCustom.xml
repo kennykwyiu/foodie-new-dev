@@ -30,8 +30,8 @@
             od.created_time as createdTime,
             od.real_pay_amount as realPayAmount,
             od.post_amount as postAmount,
-            os.order_status as orderStatus
-
+            os.order_status as orderStatus,
+            od.is_comment as isComment
         FROM orders od
         LEFT JOIN order_status os ON od.id = os.order_id
         WHERE od.user_id = #{paramsMap.userId}
