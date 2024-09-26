@@ -87,6 +87,27 @@ public class MyOrdersController extends BaseController {
         return JsonResult.ok();
     }
 
+    @ApiOperation(value="User Delete Order", notes="User Delete Order", httpMethod = "POST")
+    @PostMapping("/delete")
+    public JsonResult delete(
+            @ApiParam(name = "orderId", value = "Order ID", required = true)
+            @RequestParam String orderId,
+            @ApiParam(name = "userId", value = "User ID", required = true)
+            @RequestParam String userId) throws Exception {
+
+        JsonResult checkResult = checkUserOrder(userId, orderId);
+        if (checkResult.getStatus() != HttpStatus.OK.value()) {
+            return checkResult;
+        }
+
+        boolean res = myOrdersService.deleteOrder(userId, orderId);
+        if (!res) {
+            return JsonResult.errorMsg("Failed to delete the order!");
+        }
+
+        return JsonResult.ok();
+    }
+
     public JsonResult checkUserOrder(String userId, String orderId) {
         Orders order = myOrdersService.queryMyOrder(userId, orderId);
         if (order == null) {
