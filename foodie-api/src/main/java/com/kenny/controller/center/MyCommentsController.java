@@ -1,11 +1,11 @@
 package com.kenny.controller.center;
 
+import com.kenny.bo.OrderItemsCommentBO;
 import com.kenny.controller.BaseController;
 import com.kenny.enums.YesOrNo;
 import com.kenny.pojo.OrderItems;
 import com.kenny.pojo.Orders;
 import com.kenny.service.MyCommentsService;
-import com.kenny.service.MyOrdersService;
 import com.kenny.utils.JsonResult;
 import com.kenny.utils.PagedGridResult;
 import io.swagger.annotations.Api;
@@ -50,6 +50,32 @@ public class MyCommentsController extends BaseController {
         List<OrderItems> list = myCommentsService.queryPendingComments(orderId);
 
         return JsonResult.ok(list);
+    }
+
+    @ApiOperation(value = "Save Comment List", notes = "Save Comment List", httpMethod = "POST")
+    @PostMapping("/saveList")
+    public JsonResult saveList(
+            @ApiParam(name = "userId", value = "User ID", required = true)
+            @RequestParam String userId,
+            @ApiParam(name = "orderId", value = "Order ID", required = true)
+            @RequestParam String orderId,
+            @RequestBody List<OrderItemsCommentBO> commentList) {
+
+        System.out.println(commentList);
+
+        // Check if the user is associated with the order
+        JsonResult checkResult = checkUserOrder(userId, orderId);
+        if (checkResult.getStatus() != HttpStatus.OK.value()) {
+            return checkResult;
+        }
+
+        // Check if the comment list is not empty
+        if (commentList == null || commentList.isEmpty() || commentList.size() == 0) {
+            return JsonResult.errorMsg("Comment content cannot be empty!");
+        }
+
+        myCommentsService.saveComments(orderId, userId, commentList);
+        return JsonResult.ok();
     }
 
     @ApiOperation(value = "Query My Reviews", notes = "Query My Reviews", httpMethod = "POST")
