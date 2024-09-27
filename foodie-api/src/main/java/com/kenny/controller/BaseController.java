@@ -1,5 +1,9 @@
 package com.kenny.controller;
 
+import com.kenny.pojo.Orders;
+import com.kenny.service.MyOrdersService;
+import com.kenny.utils.JsonResult;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.io.File;
@@ -32,5 +36,15 @@ public class BaseController {
 //                                                        File.separator + "Desktop" + File.separator + "java" +
 //                                                        File.separator + "images" + File.separator + "foodie" +
 //                                                        File.separator + "faces";
+
+    @Autowired
+    public MyOrdersService myOrdersService;
+    public JsonResult checkUserOrder(String userId, String orderId) {
+        Orders order = myOrdersService.queryMyOrder(userId, orderId);
+        if (order == null) {
+            return JsonResult.errorMsg("Order does not exist!");
+        }
+        return JsonResult.ok(order);
+    }
 
 }
