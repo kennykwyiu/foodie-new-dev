@@ -52,7 +52,32 @@ public class MyCommentsController extends BaseController {
         return JsonResult.ok(list);
     }
 
+    @ApiOperation(value = "Query My Reviews", notes = "Query My Reviews", httpMethod = "POST")
+    @PostMapping("/query")
+    public JsonResult query(
+            @ApiParam(name = "userId", value = "User ID", required = true)
+            @RequestParam String userId,
+            @ApiParam(name = "page", value = "Page number for next page query", required = false)
+            @RequestParam Integer page,
+            @ApiParam(name = "pageSize", value = "Number of items to display per page", required = false)
+            @RequestParam Integer pageSize) {
 
+        if (StringUtils.isBlank(userId)) {
+            return JsonResult.errorMsg(null);
+        }
+        if (page == null) {
+            page = 1;
+        }
+        if (pageSize == null) {
+            pageSize = COMMON_PAGE_SIZE;
+        }
+
+        PagedGridResult grid = myCommentsService.queryMyComments(userId,
+                page,
+                pageSize);
+
+        return JsonResult.ok(grid);
+    }
 
 
 
