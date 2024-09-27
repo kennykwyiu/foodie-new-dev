@@ -1,5 +1,6 @@
 package com.kenny.service;
 
+import com.kenny.bo.OrderItemsCommentBO;
 import com.kenny.pojo.OrderItems;
 import com.kenny.utils.PagedGridResult;
 
@@ -10,6 +11,6 @@ public interface MyCommentsService {
 
     PagedGridResult queryMyComments(String userId, Integer page, Integer pageSize);
 
-
+    void saveComments(String orderId, String userId, List<OrderItemsCommentBO> commentList);
 }
 
