@@ -4,7 +4,7 @@
 #
 ############################################################
 server:
-  port: 8088
+#  port: 8088
   tomcat:
     uri-encoding: UTF-8
   max-http-header-size: 80KB
@@ -15,8 +15,8 @@ server:
 #
 ############################################################
 spring:
-#  profiles:
-#    active: dev
+  profiles:
+    active: prod
   datasource:                                         # Data source related configuration
     type: com.zaxxer.hikari.HikariDataSource          # Data source type: HikariCP
     driver-class-name: com.mysql.jdbc.Driver          # MySQL Driver
