@@ -1,2 +1,12 @@
 server:
   port: 8088
+
+spring:
+  datasource:                                         # Data source related configuration
+    url: jdbc:mysql://192.168.74.128:3306/foodie-shop-dev?useSSL=false&useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
+
+    password: ****
+
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
