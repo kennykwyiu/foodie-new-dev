@@ -1,12 +1,8 @@
 package com.kenny.service;
 
-import com.kenny.pojo.Category;
 import com.kenny.pojo.Orders;
 import com.kenny.utils.PagedGridResult;
-import com.kenny.vo.CategoryVO;
-import com.kenny.vo.NewItemsVO;
-
-import java.util.List;
+import com.kenny.vo.OrderStatusCountsVO;
 
 public interface MyOrdersService {
     public PagedGridResult queryMyOrders(String userId,
@@ -21,5 +17,7 @@ public interface MyOrdersService {
     boolean updateReceiveOrderStatus(String orderId);
 
     boolean deleteOrder(String userId, String orderId);
+
+    public OrderStatusCountsVO getOrderStatusCounts(String userId);
 }
 
