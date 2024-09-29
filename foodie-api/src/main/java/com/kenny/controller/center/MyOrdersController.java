@@ -2,11 +2,10 @@ package com.kenny.controller.center;
 
 import com.kenny.controller.BaseController;
 import com.kenny.pojo.Orders;
-import com.kenny.pojo.Users;
 import com.kenny.service.MyOrdersService;
-import com.kenny.service.center.CenterUserService;
 import com.kenny.utils.JsonResult;
 import com.kenny.utils.PagedGridResult;
+import com.kenny.vo.OrderStatusCountsVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -23,6 +22,23 @@ public class MyOrdersController extends BaseController {
 
     @Autowired
     private MyOrdersService myOrdersService;
+
+    @ApiOperation(value = "Get Order Status Counts Overview", notes = "Get Order Status Counts Overview", httpMethod = "POST")
+    @PostMapping("/statusCounts")
+    public JsonResult statusCounts(
+            @ApiParam(name = "userId", value = "User ID", required = true)
+            @RequestParam String userId) {
+
+        if (StringUtils.isBlank(userId)) {
+            return JsonResult.errorMsg(null);
+        }
+
+        // Retrieve order status counts for the given user ID
+        OrderStatusCountsVO result = myOrdersService.getOrderStatusCounts(userId);
+
+        // Return the order status counts in the response
+        return JsonResult.ok(result);
+    }
 
     @PostMapping("/query")
     public JsonResult query(
