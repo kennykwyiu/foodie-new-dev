@@ -20,9 +20,9 @@ spring:
   datasource:                                         # Data source related configuration
     type: com.zaxxer.hikari.HikariDataSource          # Data source type: HikariCP
     driver-class-name: com.mysql.jdbc.Driver          # MySQL Driver
-    url: jdbc:mysql://localhost:3306/foodie-shop-dev?useSSL=false&useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
+#    url: jdbc:mysql://localhost:3306/foodie-shop-dev?useSSL=false&useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
     username: root
-    password: P@ssw0rd
+#    password: P@ssw0rd
     hikari:
       connection-timeout: 30000       # Maximum time to wait for a connection from the pool (in milliseconds), SQLException occurs if no connection is available after this time, default: 30 seconds
       minimum-idle: 5                 # Minimum number of idle connections
@@ -45,8 +45,8 @@ spring:
 mybatis:
   type-aliases-package: com.kenny.pojo          # Package path where all POJO classes are located
   mapper-locations: classpath:mapper/*.xml      # Mapper mapping files
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 ############################################################
 #
