@@ -19,5 +19,9 @@ public interface MyOrdersService {
     boolean deleteOrder(String userId, String orderId);
 
     public OrderStatusCountsVO getOrderStatusCounts(String userId);
+
+    public PagedGridResult getOrdersTrend(String userId,
+                                         Integer page,
+                                         Integer pageSize);
 }
 
