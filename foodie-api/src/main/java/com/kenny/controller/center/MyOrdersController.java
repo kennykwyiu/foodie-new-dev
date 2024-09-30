@@ -132,4 +132,30 @@ public class MyOrdersController extends BaseController {
         return JsonResult.ok(order);
     }
 
+    @ApiOperation(value = "Query Order Trends", notes = "Query Order Trends", httpMethod = "POST")
+    @PostMapping("/trend")
+    public JsonResult trend(
+            @ApiParam(name = "userId", value = "User ID", required = true)
+            @RequestParam String userId,
+            @ApiParam(name = "page", value = "The page number for the next page to query", required = false)
+            @RequestParam Integer page,
+            @ApiParam(name = "pageSize", value = "Number of items to display per page", required = false)
+            @RequestParam Integer pageSize) {
+
+        if (StringUtils.isBlank(userId)) {
+            return JsonResult.errorMsg(null);
+        }
+        if (page == null) {
+            page = 1;
+        }
+        if (pageSize == null) {
+            pageSize = COMMON_PAGE_SIZE; // Assuming COMMON_PAGE_SIZE is a constant defined elsewhere
+        }
+
+        // Retrieve order trends for the specified user, page, and page size
+        PagedGridResult grid = myOrdersService.getOrdersTrend(userId, page, pageSize);
+
+        return JsonResult.ok(grid);
+    }
+
 }
