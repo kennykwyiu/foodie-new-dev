@@ -14,6 +14,10 @@ public class CorsConfig {
     public CorsFilter corsFilter() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin("http://localhost:8080");
+        configuration.addAllowedOrigin("http://192.168.74.128:8080");
+        configuration.addAllowedOrigin("http://192.168.74.128");
+        configuration.addAllowedOrigin("http://www.kenny.com:8080");
+        configuration.addAllowedOrigin("http://www.kenny.com");
 
         // allow to send cookie info
         configuration.setAllowCredentials(true);
