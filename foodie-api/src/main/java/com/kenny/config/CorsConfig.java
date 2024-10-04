@@ -19,6 +19,7 @@ public class CorsConfig {
         configuration.addAllowedOrigin("http://www.kenny.com:8080");
         configuration.addAllowedOrigin("http://www.kenny.com:8080/");
         configuration.addAllowedOrigin("http://www.kenny.com");
+        configuration.addAllowedOrigin("*");
 
         // allow to send cookie info
         configuration.setAllowCredentials(true);
