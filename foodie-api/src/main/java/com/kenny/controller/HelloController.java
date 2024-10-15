@@ -13,7 +13,7 @@ import javax.servlet.http.HttpSession;
 @RestController
 public class HelloController {
 
-    final static Logger logger  = LoggerFactory.getLogger(HelloController.class);
+    final static Logger logger = LoggerFactory.getLogger(HelloController.class);
 
     @GetMapping("/hello")
     public Object hello() {
@@ -24,7 +24,7 @@ public class HelloController {
         return "</br></br></br><H1>Hello World!</H1>";
     }
 
-        @GetMapping("/setSession")
+    @GetMapping("/setSession")
     public Object setSession(HttpServletRequest request) {
         HttpSession session = request.getSession();
         session.setAttribute("userInfo", "new user");
