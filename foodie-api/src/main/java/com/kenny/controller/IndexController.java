@@ -56,6 +56,12 @@ public class IndexController {
     }
 
     /**
+     * 1. Once the advertisement (carousel image) is updated in the backend operation system, the cache can be cleared and then reset.
+     * 2. Scheduled reset, for example, reset at 3 AM every day.
+     * 3. Each carousel image could represent an advertisement, and each advertisement may have an expiration time. When expired, reset.
+     */
+
+    /**
      * Home page category display requirements:
      * 1. When the homepage is first loaded, query the main categories and render them on the homepage.
      * 2. If the mouse hovers over a main category, load the content of its subcategories. If the subcategories are already loaded, there is no need to load them again (lazy loading).
@@ -63,7 +69,14 @@ public class IndexController {
     @ApiOperation(value = "Get Product Categories (Primary Categories)", notes = "Get Product Categories (Primary Categories)", httpMethod = "GET")
     @GetMapping("/cats")
     public JsonResult cats() {
-        List<Category> categories = categoryService.queryAllRootLevelCat();
+        List<Category> categories = new ArrayList<>();
+        String catsStr = redisOperator.get("cats");
+        if (StringUtils.isBlank(catsStr)) {
+            categories = categoryService.queryAllRootLevelCat();
+            redisOperator.set("cats", JsonUtils.objectToJson(categories));
+        } else {
+            categories = JsonUtils.jsonToList(catsStr, Category.class);
+        }
         return JsonResult.ok(categories);
     }
 
