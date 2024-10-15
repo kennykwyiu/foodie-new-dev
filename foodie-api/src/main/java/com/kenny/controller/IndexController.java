@@ -6,11 +6,14 @@ import com.kenny.pojo.Category;
 import com.kenny.service.CarouselService;
 import com.kenny.service.CategoryService;
 import com.kenny.utils.JsonResult;
+import com.kenny.utils.JsonUtils;
+import com.kenny.utils.RedisOperator;
 import com.kenny.vo.CategoryVO;
 import com.kenny.vo.NewItemsVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Api(value = "Home Page", tags = {"Related APIs for home page display"})
@@ -31,12 +35,23 @@ public class IndexController {
     @Autowired
     private CategoryService categoryService;
 
+    @Autowired
+    private RedisOperator redisOperator;
+
     final static Logger logger = LoggerFactory.getLogger(IndexController.class);
 
     @ApiOperation(value = "Get list of home page carousel images", notes = "Get list of home page carousel images", httpMethod = "GET")
     @GetMapping("/carousel")
     public JsonResult carousel() {
-        List<Carousel> result = carouselService.queryAll(YesOrNo.YES.type);
+        List<Carousel> result = new ArrayList<>();
+        String carouselStr = redisOperator.get("carousel");
+
+        if (StringUtils.isBlank(carouselStr)) {
+            result = carouselService.queryAll(YesOrNo.YES.type);
+            redisOperator.set("carousel", JsonUtils.objectToJson(result));
+        } else {
+            result = JsonUtils.jsonToList(carouselStr, Carousel.class);
+        }
         return JsonResult.ok(result);
     }
 
@@ -62,7 +77,7 @@ public class IndexController {
         }
 
         List<CategoryVO> subCatList = categoryService.getSubCatList(rootCatId);
-        return  JsonResult.ok(subCatList);
+        return JsonResult.ok(subCatList);
     }
 
     @ApiOperation(value = "Retrieve the Latest 6 Items for Each Primary Category", notes = "Retrieve the Latest 6 Items for Each Primary Category", httpMethod = "GET")
