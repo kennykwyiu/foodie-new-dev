@@ -69,7 +69,7 @@ public class IndexController {
     @ApiOperation(value = "Get Product Categories (Primary Categories)", notes = "Get Product Categories (Primary Categories)", httpMethod = "GET")
     @GetMapping("/cats")
     public JsonResult cats() {
-        List<Category> categories = new ArrayList<>();
+        List<Category> categories;
         String catsStr = redisOperator.get("cats");
         if (StringUtils.isBlank(catsStr)) {
             categories = categoryService.queryAllRootLevelCat();
@@ -89,7 +89,15 @@ public class IndexController {
             return JsonResult.errorMsg("Subcategory does not exist");
         }
 
-        List<CategoryVO> subCatList = categoryService.getSubCatList(rootCatId);
+        List<CategoryVO> subCatList;
+        String catsStr = redisOperator.get("subCat:" + rootCatId);
+
+        if (StringUtils.isBlank(catsStr)) {
+            subCatList = categoryService.getSubCatList(rootCatId);
+            redisOperator.set("subCat:" + rootCatId, JsonUtils.objectToJson(subCatList));
+        } else {
+            subCatList = JsonUtils.jsonToList(catsStr, CategoryVO.class);
+        }
         return JsonResult.ok(subCatList);
     }
 
