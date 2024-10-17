@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -78,11 +79,12 @@ public class OrderServiceImpl implements OrderService {
         Integer totalAmount = 0;
         Integer realPayAmount = 0;
 
-
+        List<ShopcartBO> toBeRemovedShopcartList = new ArrayList<>();
         for (String itemSpecId : itemSpecIdArr) {
             ShopcartBO cartItem = getBuyCountsFromShopcart(shopcartList, itemSpecId);
             // TODO After integrating Redis, retrieve the purchased quantity from the Redis shopping cart
             int buyCounts = cartItem.getBuyCounts();
+            toBeRemovedShopcartList.add(cartItem);
 
             // 2.1 Query specific information based on spec id, mainly to get the price
             ItemsSpec itemsSpec = itemService.queryItemSpecById(itemSpecId);
@@ -134,6 +136,7 @@ public class OrderServiceImpl implements OrderService {
         OrderVO orderVO = new OrderVO();
         orderVO.setOrderId(orderId);
         orderVO.setMerchantOrdersVO(merchantOrdersVO);
+        orderVO.setToBeRemovedShopcartList(toBeRemovedShopcartList);
 
         return orderVO;
     }
