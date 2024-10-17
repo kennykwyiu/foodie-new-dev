@@ -39,7 +39,7 @@ public class ShopCartController extends BaseController {
 
         System.out.println(shopcartBO);
 
-        // When a frontend user logs in and adds items to the shopping cart, the shopping cart will be synchronized to the Redis cache on the backend simultaneously.
+        // TODO When a frontend user logs in and adds items to the shopping cart, the shopping cart will be synchronized to the Redis cache on the backend simultaneously.
         // It is necessary to check if the current cart already contains the item. If it does, then increment the purchase quantity.
 
         String shopcartJson = redisOperator.get(FOODIE_SHOPCART + ":" + userId);
@@ -80,6 +80,19 @@ public class ShopCartController extends BaseController {
 
         // TODO When a user deletes shopping cart data on the page, if the user is logged in at this time,
         //  it is necessary to synchronize the deletion of the items in the backend shopping cart.
+
+        String shopcartJson = redisOperator.get(FOODIE_SHOPCART + ":" + userId);
+        if (StringUtils.isNotBlank(shopcartJson)) {
+            List<ShopcartBO> shopcartList = JsonUtils.jsonToList(shopcartJson, ShopcartBO.class);
+            for (ShopcartBO sc : shopcartList) {
+                String tmpSpecId = sc.getSpecId();
+                if (tmpSpecId.equals(itemSpecId)) {
+                    shopcartList.remove(sc);
+                    break;
+                }
+            }
+            redisOperator.set(FOODIE_SHOPCART + ":" + userId, JsonUtils.objectToJson(shopcartList));
+        }
 
         return JsonResult.ok();
     }
