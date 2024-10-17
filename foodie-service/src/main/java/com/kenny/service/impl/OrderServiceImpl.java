@@ -1,5 +1,6 @@
 package com.kenny.service.impl;
 
+import com.kenny.bo.ShopcartBO;
 import com.kenny.bo.SubmitOrderBO;
 import com.kenny.enums.OrderStatusEnum;
 import com.kenny.enums.YesOrNo;
@@ -38,7 +39,7 @@ public class OrderServiceImpl implements OrderService {
     private Sid sid;
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
-    public OrderVO createOrder(SubmitOrderBO submitOrderBO) {
+    public OrderVO createOrder(List<ShopcartBO> shopcartList, SubmitOrderBO submitOrderBO) {
         String userId = submitOrderBO.getUserId();
         String addressId = submitOrderBO.getAddressId();
         String itemSpecIds = submitOrderBO.getItemSpecIds();
@@ -77,10 +78,11 @@ public class OrderServiceImpl implements OrderService {
         Integer totalAmount = 0;
         Integer realPayAmount = 0;
 
-        // TODO After integrating Redis, retrieve the purchased quantity from the Redis shopping cart
-        int buyCounts = 1;
 
         for (String itemSpecId : itemSpecIdArr) {
+            ShopcartBO cartItem = getBuyCountsFromShopcart(shopcartList, itemSpecId);
+            // TODO After integrating Redis, retrieve the purchased quantity from the Redis shopping cart
+            int buyCounts = cartItem.getBuyCounts();
 
             // 2.1 Query specific information based on spec id, mainly to get the price
             ItemsSpec itemsSpec = itemService.queryItemSpecById(itemSpecId);
@@ -135,6 +137,17 @@ public class OrderServiceImpl implements OrderService {
 
         return orderVO;
     }
+
+    private ShopcartBO getBuyCountsFromShopcart(List<ShopcartBO> shopcartList, String specId) {
+        for (ShopcartBO shopcartBO : shopcartList) {
+            String tmpSpecId = shopcartBO.getSpecId();
+            if (tmpSpecId.equals(specId)) {
+                return shopcartBO;
+            }
+        }
+        return null;
+    }
+
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void updateOrderStatus(String orderId, Integer orderStatus) {
