@@ -1,12 +1,10 @@
 package com.kenny.controller;
 
+import com.kenny.bo.ShopcartBO;
 import com.kenny.bo.UserBO;
 import com.kenny.pojo.Users;
 import com.kenny.service.UserService;
-import com.kenny.utils.CookieUtils;
-import com.kenny.utils.JsonResult;
-import com.kenny.utils.JsonUtils;
-import com.kenny.utils.MD5Utils;
+import com.kenny.utils.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
@@ -16,13 +14,18 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Api(value = "register login", tags = {"api for register and login"})
 @RestController
 @RequestMapping("passport")
-public class PassportController {
+public class PassportController extends BaseController {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private RedisOperator redisOperator;
 
     @ApiOperation(value = "is username exist or not", notes = "is username exist or not", httpMethod = "GET")
     @GetMapping("/usernameIsExist")
@@ -104,6 +107,80 @@ public class PassportController {
         return JsonResult.ok(users);
     }
 
+    /**
+     * After successful registration and login, synchronize shopping cart data between cookies and Redis.
+     */
+    private void synchShopcartData(String userId, HttpServletRequest request,
+                                   HttpServletResponse response) {
+
+        /**
+         * 1. If there is no data in Redis and the cookie's shopping cart is empty, do nothing.
+         *    If the cookie's shopping cart is not empty, directly put it into Redis.
+         * 2. If there is data in Redis and the cookie's shopping cart is empty, directly overwrite the local cookie with the Redis shopping cart.
+         *    If the cookie's shopping cart is not empty,
+         *        - If a product in the cookie also exists in Redis,
+         *          then prioritize the cookie, delete it from Redis,
+         *          and directly overwrite the product from the cookie into Redis (similar to Jingdong).
+         * 3. After synchronization to Redis, update the data in the local cookie shopping cart to ensure it is up to date.
+         */
+
+        // Get the shopping cart from Redis
+        String shopcartJsonRedis = redisOperator.get(FOODIE_SHOPCART + ":" + userId);
+
+        // Get the shopping cart from the cookie
+        String shopcartStrCookie = CookieUtils.getCookieValue(request, FOODIE_SHOPCART, true);
+
+        if (StringUtils.isBlank(shopcartJsonRedis) && StringUtils.isNotBlank(shopcartStrCookie)) {
+            // If Redis is empty but the cookie is not, put the data from the cookie into Redis
+                redisOperator.set(FOODIE_SHOPCART + ":" + userId, shopcartStrCookie);
+        } else {
+            // If Redis is not empty and the cookie is not empty, merge the data from the cookie and Redis shopping carts (cookie data overrides Redis for the same product)
+            if (StringUtils.isNotBlank(shopcartStrCookie)) {
+
+                /**
+                 * 1. For existing items, overwrite the quantity from the cookie to Redis (like Jingdong)
+                 * 2. Mark the item to be deleted and add it to a pending delete list
+                 * 3. Clean up all items marked for deletion from the cookie
+                 * 4. Merge data from Redis and the cookie
+                 * 5. Update to Redis and the cookie
+                 */
+
+                List<ShopcartBO> shopcartListRedis = JsonUtils.jsonToList(shopcartJsonRedis, ShopcartBO.class);
+                List<ShopcartBO> shopcartListCookie = JsonUtils.jsonToList(shopcartStrCookie, ShopcartBO.class);
+
+                // Define a list for pending deletions
+                List<ShopcartBO> pendingDeleteList = new ArrayList<>();
+
+                for (ShopcartBO redisShopcart : shopcartListRedis) {
+                    String redisSpecId = redisShopcart.getSpecId();
+
+                    for (ShopcartBO cookieShopcart : shopcartListCookie) {
+                        String cookieSpecId = cookieShopcart.getSpecId();
+
+                        if (redisSpecId.equals(cookieSpecId)) {
+                            // Overwrite the purchase quantity, do not accumulate, similar to Jingdong
+                            redisShopcart.setBuyCounts(cookieShopcart.getBuyCounts());
+                            // Add the cookieShopcart to the pending delete list for later removal and merging
+                            pendingDeleteList.add(cookieShopcart);
+                        }
+                    }
+                }
+
+                // Remove the overwritten product data from the current cookie
+                shopcartListCookie.removeAll(pendingDeleteList);
+
+                // Merge the two lists
+                shopcartListRedis.addAll(shopcartListCookie);
+                // Update in Redis and the cookie
+                CookieUtils.setCookie(request, response, FOODIE_SHOPCART, JsonUtils.objectToJson(shopcartListRedis), true);
+                redisOperator.set(FOODIE_SHOPCART + ":" + userId, JsonUtils.objectToJson(shopcartListRedis));
+            } else {
+                // If Redis is not empty but the cookie is empty, overwrite the cookie with Redis
+                CookieUtils.setCookie(request, response, FOODIE_SHOPCART, shopcartJsonRedis, true);
+            }
+        }
+    }
+
     private Users setNullProperty(Users users) {
         users.setPassword(null);
         users.setMobile(null);
@@ -124,8 +201,8 @@ public class PassportController {
         CookieUtils.deleteCookie(request, response, "user");
 
 
-    // TODO User logout, need to clear the shopping cart
-    // TODO In a distributed session, user data needs to be cleared
+        // TODO User logout, need to clear the shopping cart
+        // TODO In a distributed session, user data needs to be cleared
 
         return JsonResult.ok();
     }
