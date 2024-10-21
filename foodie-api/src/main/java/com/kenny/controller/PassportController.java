@@ -15,7 +15,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Api(value = "register login", tags = {"api for register and login"})
 @RestController
@@ -76,6 +78,7 @@ public class PassportController extends BaseController {
 
         // TODO Generate user token and store it in the Redis session
         // TODO Synchronize shopping cart data
+        synchShopcartData(users.getId(), request, response);
 
         return JsonResult.ok();
     }
@@ -103,6 +106,10 @@ public class PassportController extends BaseController {
         users = setNullProperty(users);
 
         CookieUtils.setCookie(request, response, "user", JsonUtils.objectToJson(users), true);
+
+        // TODO Generate user token and store it in the Redis session
+        // TODO Synchronize shopping cart data
+        synchShopcartData(users.getId(), request, response);
 
         return JsonResult.ok(users);
     }
@@ -174,6 +181,63 @@ public class PassportController extends BaseController {
                 // Update in Redis and the cookie
                 CookieUtils.setCookie(request, response, FOODIE_SHOPCART, JsonUtils.objectToJson(shopcartListRedis), true);
                 redisOperator.set(FOODIE_SHOPCART + ":" + userId, JsonUtils.objectToJson(shopcartListRedis));
+            } else {
+                // If Redis is not empty but the cookie is empty, overwrite the cookie with Redis
+                CookieUtils.setCookie(request, response, FOODIE_SHOPCART, shopcartJsonRedis, true);
+            }
+        }
+    }
+
+    private void synchShopcartDataUsingMap(String userId, HttpServletRequest request,
+                                   HttpServletResponse response) {
+        // Get the shopping cart from Redis
+        String shopcartJsonRedis = redisOperator.get(FOODIE_SHOPCART + ":" + userId);
+
+        // Get the shopping cart from the cookie
+        String shopcartStrCookie = CookieUtils.getCookieValue(request, FOODIE_SHOPCART, true);
+
+        if (StringUtils.isBlank(shopcartJsonRedis) && StringUtils.isNotBlank(shopcartStrCookie)) {
+            // If Redis is empty but the cookie is not, put the data from the cookie into Redis
+            redisOperator.set(FOODIE_SHOPCART + ":" + userId, shopcartStrCookie);
+        } else {
+            // If Redis is not empty and the cookie is not empty, merge the data from the cookie and Redis shopping carts (cookie data overrides Redis for the same product)
+            if (StringUtils.isNotBlank(shopcartStrCookie)) {
+                List<ShopcartBO> shopcartListRedis = JsonUtils.jsonToList(shopcartJsonRedis, ShopcartBO.class);
+                List<ShopcartBO> shopcartListCookie = JsonUtils.jsonToList(shopcartStrCookie, ShopcartBO.class);
+
+                // Define a list for pending deletions
+                List<ShopcartBO> pendingDeleteList = new ArrayList<>();
+                List<ShopcartBO> newShopcartList = new ArrayList<>();
+
+                // Use HashMap for faster lookup
+                Map<String, ShopcartBO> redisMap = new HashMap<>();
+
+                for (ShopcartBO shopcartRedis : shopcartListRedis) {
+                    redisMap.put(shopcartRedis.getSpecId(), shopcartRedis);
+                }
+
+                for (ShopcartBO cookieShopcart : shopcartListCookie) {
+                    String cookieShopcartSpecId = cookieShopcart.getSpecId();
+
+                    if (redisMap.containsKey(cookieShopcartSpecId)) {
+                        ShopcartBO redisShopcartBO = redisMap.get(cookieShopcartSpecId);
+                        redisShopcartBO.setBuyCounts(cookieShopcart.getBuyCounts());
+                        pendingDeleteList.add(cookieShopcart);
+                    } else {
+                        newShopcartList.add(cookieShopcart);
+                    }
+                }
+
+                newShopcartList.addAll(shopcartListRedis);
+
+                // Update Redis and the cookie with the merged list
+                shopcartListRedis.clear();
+                shopcartListRedis.addAll(newShopcartList);
+
+                CookieUtils.setCookie(request, response, FOODIE_SHOPCART, JsonUtils.objectToJson(shopcartListRedis), true);
+                redisOperator.set(FOODIE_SHOPCART + ":" + userId, JsonUtils.objectToJson(shopcartListRedis));
+
+
             } else {
                 // If Redis is not empty but the cookie is empty, overwrite the cookie with Redis
                 CookieUtils.setCookie(request, response, FOODIE_SHOPCART, shopcartJsonRedis, true);
