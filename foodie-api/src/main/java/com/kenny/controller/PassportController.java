@@ -267,6 +267,7 @@ public class PassportController extends BaseController {
 
         // TODO User logout, need to clear the shopping cart
         // TODO In a distributed session, user data needs to be cleared
+        CookieUtils.deleteCookie(request, response, FOODIE_SHOPCART);
 
         return JsonResult.ok();
     }
