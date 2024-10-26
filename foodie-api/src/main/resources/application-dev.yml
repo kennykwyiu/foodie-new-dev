@@ -3,9 +3,13 @@ server:
 
 spring:
   datasource:                                         # Data source related configuration
-    url: jdbc:mysql://192.168.74.128:3306/foodie-shop-dev?useSSL=false&useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
-
-    password: ****
+    url: jdbc:mysql://localhost:3306/foodie-shop-dev?useSSL=false&useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
+    password: your pwd
+  redis:
+    database: 1
+    host: your IP
+    port: 6379
+    password: ***
 
 mybatis:
   configuration:
