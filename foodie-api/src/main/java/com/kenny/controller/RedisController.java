@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @ApiIgnore
@@ -44,5 +45,11 @@ public class RedisController {
             result.add(s);
         }
         return result;
+    }
+
+    @GetMapping("/mget")
+    public Object mget(String... keys) {
+        List<String> keysList = Arrays.asList(keys);
+        return redisOperator.get(keysList);
     }
 }
