@@ -94,6 +94,17 @@ public class PassportController extends BaseController {
         return JsonResult.ok();
     }
 
+    private UserVO convertUserVo(Users users) {
+        // Implementing user session using Redis
+        String uniqueToken = UUID.randomUUID().toString().trim();
+        redisOperator.set(REDIS_USER_TOKEN + ":" + users.getId(),
+                          uniqueToken);
+        UserVO userVO = new UserVO();
+        BeanUtils.copyProperties(users, userVO);
+        userVO.setUserUniqueToken(uniqueToken);
+        return userVO;
+    }
+
     @ApiOperation(value = "user login", notes = "user login", httpMethod = "POST")
     @PostMapping("/login")
     public JsonResult login(@RequestBody UserBO userBO,
