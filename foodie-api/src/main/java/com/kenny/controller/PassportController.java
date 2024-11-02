@@ -73,13 +73,8 @@ public class PassportController extends BaseController {
 
 //        users = setNullProperty(users);
 
-        // Implementing user session using Redis
-        String uniqueToken = UUID.randomUUID().toString().trim();
-        redisOperator.set(REDIS_USER_TOKEN + ":" + users.getId(),
-                          uniqueToken);
-        UserVO userVO = new UserVO();
-        BeanUtils.copyProperties(users, userVO);
-        userVO.setUserUniqueToken(uniqueToken);
+        // TODO Generate user token and store it in the Redis session
+        UserVO userVO = convertUserVo(users);
 
         CookieUtils.setCookie(request,
                             response,
@@ -87,7 +82,6 @@ public class PassportController extends BaseController {
                             JsonUtils.objectToJson(userVO),
                             true);
 
-        // TODO Generate user token and store it in the Redis session
         // TODO Synchronize shopping cart data
         synchShopcartData(users.getId(), request, response);
 
@@ -125,11 +119,16 @@ public class PassportController extends BaseController {
             return JsonResult.errorMsg("username or password is incorrect!");
         }
 
-        users = setNullProperty(users);
-
-        CookieUtils.setCookie(request, response, "user", JsonUtils.objectToJson(users), true);
-
         // TODO Generate user token and store it in the Redis session
+//        users = setNullProperty(users);
+        UserVO userVO = convertUserVo(users);
+
+        CookieUtils.setCookie(request,
+                            response,
+                            "user",
+                            JsonUtils.objectToJson(userVO),
+                            true);
+
         // TODO Synchronize shopping cart data
         synchShopcartData(users.getId(), request, response);
 
