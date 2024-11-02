@@ -50,6 +50,6 @@ public class RedisController {
     @GetMapping("/mget")
     public Object mget(String... keys) {
         List<String> keysList = Arrays.asList(keys);
-        return redisOperator.get(keysList);
+        return redisOperator.mget(keysList);
     }
 }
