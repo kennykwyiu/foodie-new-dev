@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @ApiIgnore
 @RestController
 @RequestMapping("redis")
@@ -31,5 +34,15 @@ public class RedisController {
     public Object delete(String key) {
         redisOperator.del(key);
         return "OK";
+    }
+
+    @GetMapping("/getALot")
+    public Object getALot(String... keys) {
+        List<String> result = new ArrayList<>();
+        for (String key : keys) {
+            String s = redisOperator.get(key);
+            result.add(s);
+        }
+        return result;
     }
 }
