@@ -99,6 +99,10 @@ public class RedisOperator {
         return (String) redisTemplate.opsForValue().get(key);
     }
 
+    public List<String> get(List<String> keys) {
+        return redisTemplate.opsForValue().multiGet(keys);
+    }
+
     /**
      * Batch query, equivalent to mget
      *
