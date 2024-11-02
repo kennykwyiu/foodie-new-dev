@@ -24,6 +24,7 @@ public class BaseController {
     public static final String FOODIE_SHOPCART = "shopcart";
     public static final Integer COMMON_PAGE_SIZE = 10;
     public static final Integer PAGE_SIZE = 20;
+    public static final String REDIS_USER_TOKEN = "redis_user_token";
 
     // Location for user avatar uploads
 //    public static final String IMAGE_USER_FACE_LOCATION = File.separator + "workspaces" +

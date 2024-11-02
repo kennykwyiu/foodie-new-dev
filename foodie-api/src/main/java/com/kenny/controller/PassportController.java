@@ -14,10 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Api(value = "register login", tags = {"api for register and login"})
 @RestController
@@ -74,7 +71,16 @@ public class PassportController extends BaseController {
 
         users = setNullProperty(users);
 
-        CookieUtils.setCookie(request, response, "user", JsonUtils.objectToJson(users), true);
+        // Implementing user session using Redis
+        String uniqueToken = UUID.randomUUID().toString().trim();
+        redisOperator.set(REDIS_USER_TOKEN + ":" + users.getId(),
+                          uniqueToken);
+
+        CookieUtils.setCookie(request,
+                            response,
+                            "user",
+                            JsonUtils.objectToJson(users),
+                            true);
 
         // TODO Generate user token and store it in the Redis session
         // TODO Synchronize shopping cart data
