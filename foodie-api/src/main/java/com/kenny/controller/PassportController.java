@@ -5,9 +5,11 @@ import com.kenny.bo.UserBO;
 import com.kenny.pojo.Users;
 import com.kenny.service.UserService;
 import com.kenny.utils.*;
+import com.kenny.vo.UserVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -69,17 +71,20 @@ public class PassportController extends BaseController {
 
         Users users = userService.createUser(userBO);
 
-        users = setNullProperty(users);
+//        users = setNullProperty(users);
 
         // Implementing user session using Redis
         String uniqueToken = UUID.randomUUID().toString().trim();
         redisOperator.set(REDIS_USER_TOKEN + ":" + users.getId(),
                           uniqueToken);
+        UserVO userVO = new UserVO();
+        BeanUtils.copyProperties(users, userVO);
+        userVO.setUserUniqueToken(uniqueToken);
 
         CookieUtils.setCookie(request,
                             response,
                             "user",
-                            JsonUtils.objectToJson(users),
+                            JsonUtils.objectToJson(userVO),
                             true);
 
         // TODO Generate user token and store it in the Redis session
