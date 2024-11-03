@@ -94,7 +94,19 @@ public class IndexController {
 
         if (StringUtils.isBlank(catsStr)) {
             subCatList = categoryService.getSubCatList(rootCatId);
-            redisOperator.set("subCat:" + rootCatId, JsonUtils.objectToJson(subCatList));
+            /**
+             * When the queried key does not exist in Redis and the corresponding ID does not exist in the database,
+             * it becomes vulnerable to attacks by unauthorized users.
+             * A large number of requests directly hit the database, leading to a crash and affecting the entire system.
+             * This phenomenon is known as cache penetration.
+             * Solution: Cache even the empty data, such as empty strings, empty objects, empty arrays, or lists.
+             */
+            if (subCatList != null && subCatList.size() > 0) {
+                redisOperator.set("subCat:" + rootCatId, JsonUtils.objectToJson(subCatList));
+            } else {
+                redisOperator.set("subCat:" + rootCatId, JsonUtils.objectToJson(subCatList), 5*60);
+            }
+
         } else {
             subCatList = JsonUtils.jsonToList(catsStr, CategoryVO.class);
         }
