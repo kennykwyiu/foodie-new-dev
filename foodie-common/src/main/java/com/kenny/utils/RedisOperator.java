@@ -116,6 +116,8 @@ public class RedisOperator {
      * @return
      */
     public List<Object> batchGet(List<String> keys) {
+        // nginx -> keepalived (same concept)
+        // redis -> pipeline
         List<Object> result = redisTemplate.executePipelined(new RedisCallback<String>() {
             @Override
             public String doInRedis(RedisConnection connection) throws DataAccessException {

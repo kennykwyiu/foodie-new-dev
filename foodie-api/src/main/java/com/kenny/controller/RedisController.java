@@ -52,4 +52,10 @@ public class RedisController {
         List<String> keysList = Arrays.asList(keys);
         return redisOperator.mget(keysList);
     }
+
+    @GetMapping("/batchGet")
+    public Object batchGet(String... keys) {
+        List<String> keysList = Arrays.asList(keys);
+        return redisOperator.batchGet(keysList);
+    }
 }
