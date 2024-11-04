@@ -9,6 +9,7 @@ import com.kenny.utils.CookieUtils;
 import com.kenny.utils.DateUtil;
 import com.kenny.utils.JsonResult;
 import com.kenny.utils.JsonUtils;
+import com.kenny.vo.UserVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -133,10 +134,12 @@ public class CenterUserController extends BaseController {
         }
 
         Users userResult = centerUserService.updateUserInfo(userId, centerUserBO);
-        userResult = setNullProperty(userResult);
-        CookieUtils.setCookie(request, response, "user", JsonUtils.objectToJson(userResult), true);
+//        userResult = setNullProperty(userResult);
 
         // TODO: Future improvement - Add token authentication, integrate with Redis for distributed sessions
+        UserVO userVO = convertUserVo(userResult);
+
+        CookieUtils.setCookie(request, response, "user", JsonUtils.objectToJson(userVO), true);
 
         return JsonResult.ok();
     }
