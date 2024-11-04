@@ -1,15 +1,23 @@
 package com.kenny.controller;
 
 import com.kenny.pojo.Orders;
+import com.kenny.pojo.Users;
 import com.kenny.service.MyOrdersService;
 import com.kenny.utils.JsonResult;
+import com.kenny.utils.RedisOperator;
+import com.kenny.vo.UserVO;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.io.File;
+import java.util.UUID;
 
 @Controller
 public class BaseController {
+
+    @Autowired
+    private RedisOperator redisOperator;
 
     // Payment center's invocation URL
 //    String paymentUrl = "http://api.z.mukewang.com/foodie-payment/payment/createMerchantOrder"; // Production
@@ -47,6 +55,17 @@ public class BaseController {
             return JsonResult.errorMsg("Order does not exist!");
         }
         return JsonResult.ok(order);
+    }
+
+    public UserVO convertUserVo(Users users) {
+        // Implementing user session using Redis
+        String uniqueToken = UUID.randomUUID().toString().trim();
+        redisOperator.set(REDIS_USER_TOKEN + ":" + users.getId(),
+                uniqueToken);
+        UserVO userVO = new UserVO();
+        BeanUtils.copyProperties(users, userVO);
+        userVO.setUserUniqueToken(uniqueToken);
+        return userVO;
     }
 
 }
