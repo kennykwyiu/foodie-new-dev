@@ -9,14 +9,16 @@ import com.kenny.vo.UserVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Api(value = "register login", tags = {"api for register and login"})
 @RestController
@@ -86,17 +88,6 @@ public class PassportController extends BaseController {
         synchShopcartData(users.getId(), request, response);
 
         return JsonResult.ok();
-    }
-
-    private UserVO convertUserVo(Users users) {
-        // Implementing user session using Redis
-        String uniqueToken = UUID.randomUUID().toString().trim();
-        redisOperator.set(REDIS_USER_TOKEN + ":" + users.getId(),
-                          uniqueToken);
-        UserVO userVO = new UserVO();
-        BeanUtils.copyProperties(users, userVO);
-        userVO.setUserUniqueToken(uniqueToken);
-        return userVO;
     }
 
     @ApiOperation(value = "user login", notes = "user login", httpMethod = "POST")
