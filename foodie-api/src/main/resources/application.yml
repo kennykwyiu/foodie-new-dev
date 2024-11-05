@@ -16,7 +16,7 @@ server:
 ############################################################
 spring:
   profiles:
-    active: prod
+    active: dev
   datasource:                                         # Data source related configuration
     type: com.zaxxer.hikari.HikariDataSource          # Data source type: HikariCP
     driver-class-name: com.mysql.jdbc.Driver          # MySQL Driver
@@ -36,7 +36,8 @@ spring:
     multipart:
       max-file-size: 512000     # File upload size limit set to 500kb
       max-request-size: 512000  # Request size limit set to 500kb
-
+  session:
+    store-type: redis
 ############################################################
 #
 # MyBatis Configuration
