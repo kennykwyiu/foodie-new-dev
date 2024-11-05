@@ -1,9 +1,11 @@
 package com.kenny.config;
 
+import com.kenny.controller.interceptor.UserTokenInterceptor;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -21,5 +23,17 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .addResourceLocations("classpath:/META-INF/resources/") // reflect to swagger 2
                 .addResourceLocations("file:\\C:\\Users\\yaowi\\Desktop\\java\\images\\");
         // -> http://localhost:8088/foodie/faces/1908017YR51G1XWH/face-1908017YR51G1XWH.png
+    }
+
+    @Bean
+    public UserTokenInterceptor userTokenInterceptor() {
+        return new UserTokenInterceptor();
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(userTokenInterceptor())
+                .addPathPatterns("/hello");
+        WebMvcConfigurer.super.addInterceptors(registry);
     }
 }
