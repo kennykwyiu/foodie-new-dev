@@ -109,12 +109,11 @@ public class CenterUserController extends BaseController {
         String  finalServerUrl = imageServerUrl + uploadPathPrefix + "?t=" + DateUtil.getCurrentDateString(DateUtil.DATE_PATTERN);
 
         Users userResult = centerUserService.updateUserFace(userId, finalServerUrl);
-
-        userResult = setNullProperty(userResult);
-        CookieUtils.setCookie(request, response, "user", JsonUtils.objectToJson(userResult), true);
+//        userResult = setNullProperty(userResult);
 
         // TODO: Future improvement - Add token authentication, integrate with Redis for distributed sessions
-
+        UserVO userVO = convertUserVo(userResult);
+        CookieUtils.setCookie(request, response, "user", JsonUtils.objectToJson(userVO), true);
 
         return JsonResult.ok();
     }
