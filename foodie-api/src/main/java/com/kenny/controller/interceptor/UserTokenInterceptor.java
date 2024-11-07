@@ -1,13 +1,18 @@
 package com.kenny.controller.interceptor;
 
+import com.kenny.utils.JsonResult;
+import com.kenny.utils.JsonUtils;
 import com.kenny.utils.RedisOperator;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public class UserTokenInterceptor implements HandlerInterceptor {
 
@@ -45,6 +50,28 @@ public class UserTokenInterceptor implements HandlerInterceptor {
          * true: After the request passes the validation check, it is OK and can be released
          */
         return true;
+    }
+
+    public void returnErrorResponse(HttpServletResponse response, JsonResult result) {
+
+        ServletOutputStream outputStream = null;
+        try {
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("text/json");
+            outputStream = response.getOutputStream();
+            outputStream.write(JsonUtils.objectToJson(result).getBytes("UTF-8"));
+            outputStream.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
     }
 
     /**
