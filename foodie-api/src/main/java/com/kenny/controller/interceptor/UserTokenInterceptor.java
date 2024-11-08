@@ -33,16 +33,19 @@ public class UserTokenInterceptor implements HandlerInterceptor {
         if (StringUtils.isNotBlank(userId) && StringUtils.isNotBlank(userToken)) {
             String uniqueToken = redisOperator.get(REDIS_USER_TOKEN + ":" + userId);
             if (StringUtils.isBlank(uniqueToken)) {
-                System.out.println("Please log in...");
+//                System.out.println("Please log in...");
+                returnErrorResponse(response, JsonResult.errorMsg("Please log in..."));
                 return false;
             } else {
                 if (!uniqueToken.equals(userToken)) {
-                    System.out.println("Account logged in from a different location...");
+//                    System.out.println("Account logged in from a different location...");
+                    returnErrorResponse(response, JsonResult.errorMsg("Account logged in from a different location..."));
                     return false;
                 }
             }
         } else {
-            System.out.println("Please log in...");
+//            System.out.println("Please log in...");
+            returnErrorResponse(response, JsonResult.errorMsg("Please log in..."));
             return false;
         }
         /**
