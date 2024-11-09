@@ -36,8 +36,8 @@ spring:
     multipart:
       max-file-size: 512000     # File upload size limit set to 500kb
       max-request-size: 512000  # Request size limit set to 500kb
-  session:
-    store-type: redis
+#  session:
+#    store-type: redis
 ############################################################
 #
 # MyBatis Configuration
