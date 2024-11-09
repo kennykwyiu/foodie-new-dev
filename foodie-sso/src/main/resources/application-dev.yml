@@ -1,0 +1,24 @@
+server:
+  port: 8090
+
+spring:
+  datasource:                                         # Data source related configuration
+    url: jdbc:mysql://localhost:3306/foodie-shop-dev?useSSL=false&useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
+    password: YOUR_PW
+  redis:
+    database: 1
+    host: 192.168.74.134
+    port: 6379
+    password: YOUR_PW
+
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+#file:
+#  imageUserFaceLocation: C:\\Users\\yaowi\\Desktop\\java\\images\\foodie\\faces
+#  imageServerUrl: http:\\\\localhost:8088\\foodie\\faces
+
+file:
+  imageUserFaceLocation: "C:\\Users\\yaowi\\Desktop\\java\\images\\foodie\\faces"
+  imageServerUrl: "http://localhost:8088/foodie/faces"
