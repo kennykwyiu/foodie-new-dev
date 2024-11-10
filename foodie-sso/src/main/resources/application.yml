@@ -38,6 +38,13 @@ spring:
       max-request-size: 512000  # Request size limit set to 500kb
 #  session:
 #    store-type: redis
+
+  thymeleaf:
+    mode: HTML
+    encoding: UTF-8
+    prefix: classpath:templates/
+    suffix: .html
+
 ############################################################
 #
 # MyBatis Configuration
