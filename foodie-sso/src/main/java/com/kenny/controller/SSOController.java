@@ -31,6 +31,9 @@ public class SSOController {
     private RedisOperator redisOperator;
 
     public static final String REDIS_USER_TOKEN = "redis_user_token";
+    public static final String REDIS_USER_TICKET = "redis_user_ticket";
+    public static final String REDIS_TMP_TICKET = "redis_tmp_ticket";
+    public static final String COOKIE_USER_TICKET = "cookie_user_ticket";
 
     final static Logger logger = LoggerFactory.getLogger(SSOController.class);
 
@@ -62,11 +65,13 @@ public class SSOController {
 
         model.addAttribute("returnUrl", returnUrl);
 
+        // 0. Check that the username and password must not be empty
         if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
             model.addAttribute("errmsg","username or password cannot be empty!");
             return "login";
         }
 
+        // 1. Implement login
         String md5Str = MD5Utils.getMD5Str(password);
 
         Users users = userService.queryUserForLogin(username, md5Str);
@@ -76,7 +81,7 @@ public class SSOController {
             return "login";
         }
 
-        // Implementing user session using Redis
+        // 2 Implementing user session using Redis
         String uniqueToken = UUID.randomUUID().toString().trim();
         UserVO userVO = new UserVO();
         BeanUtils.copyProperties(users, userVO);
@@ -85,7 +90,29 @@ public class SSOController {
         redisOperator.set(REDIS_USER_TOKEN + ":" + users.getId(),
                 JsonUtils.objectToJson(userVO));
 
-        return "login";
+        // 3. Generate a ticket, a global ticket representing that the user has logged in to the CAS system
+        String userTicket = UUID.randomUUID().toString().trim();
+
+        // 3.1 User's global ticket needs to be placed in the CAS cookie
+
+
+        // 4. Associate userTicket with the user ID, and store it in Redis, indicating that the user has a ticket and can visit various attractions
+        redisOperator.set(REDIS_USER_TICKET + ":" + userTicket ,users.getId());
+
+        // 5. Generate a temporary ticket to return to the calling website, issued by the CAS system as a one-time temporary ticket
+        String tmpTicket = createTmpTicket();
+        /**
+         * Example:
+         *      When we go to the zoo to play, we buy a unified ticket at the entrance, which is the global ticket and user global session of the CAS system.
+         *      Inside the zoo, there are some small attractions where you need to collect a one-time ticket with your main ticket. With this ticket, you can visit these small attractions.
+         *      These small attractions correspond to the individual sites we are talking about here.
+         *      After using this temporary ticket, it needs to be destroyed.
+         */
+
+//        return "login";
+        return "redirect:" + returnUrl + "?tmpTicket=" +  tmpTicket;
     }
+
+
 
 }
