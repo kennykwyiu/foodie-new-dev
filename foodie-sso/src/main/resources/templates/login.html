@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>SSO Single Sign-On</title>
+</head>
+<body>
+<h1>Welcome to the Single Sign-On System</h1>
+<form action="doLogin" method="post">
+    <input type="text" name="username" placeholder="Enter your username"/>
+    <input type="password" name="password" placeholder="Enter your password"/>
+    <input type="hidden" name="returnUrl" th:value="${returnUrl}">
+    <input type="submit" value="Login"/>
+</form>
+<span style="color:red" th:text="${errmsg}"></span>
+</body>
+</html>
