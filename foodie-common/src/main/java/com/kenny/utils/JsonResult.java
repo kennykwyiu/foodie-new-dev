@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * 				502: Interceptor intercepted user token error
  * 				555: Exception thrown information
  * 				556: User QQ verification exception
+ * 			    557: Validating whether a user is logged in to CAS and verifying the user ticket
  */
 public class JsonResult {
 
@@ -69,6 +70,10 @@ public class JsonResult {
 
     public static JsonResult errorUserQQ(String msg) {
         return new JsonResult(556, msg, null);
+    }
+
+    public static JsonResult errorUserTicket(String msg) {
+        return new JsonResult(557, msg, null);
     }
 
     public JsonResult() {
