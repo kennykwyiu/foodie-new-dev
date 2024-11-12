@@ -50,10 +50,10 @@ public class SSOController {
 
     /**
      * CAS Unified Login Interface
-     *      Purpose:
-     *          1. Create a global session for the user after login                     -> uniqueToken
-     *          2. Create a global ticket for the user to indicate CAS login status     -> userTicket
-     *          3. Create a temporary ticket for the user for callback transmission     -> tmpTicket
+     * Purpose:
+     * 1. Create a global session for the user after login                     -> uniqueToken
+     * 2. Create a global ticket for the user to indicate CAS login status     -> userTicket
+     * 3. Create a temporary ticket for the user for callback transmission     -> tmpTicket
      */
     @PostMapping("/doLogin")
     public String doLogin(String username,
