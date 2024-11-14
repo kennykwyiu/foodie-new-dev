@@ -16,6 +16,8 @@ public class CorsConfig {
         configuration.addAllowedOrigin("http://localhost:8080");
         configuration.addAllowedOrigin("http://192.168.74.128:8080");
         configuration.addAllowedOrigin("http://192.168.74.128");
+        configuration.addAllowedOrigin("http://192.168.74.134");
+        configuration.addAllowedOrigin("http://192.168.74.134:6379");
         configuration.addAllowedOrigin("http://www.kenny.com:8080");
         configuration.addAllowedOrigin("http://www.kenny.com:8080/");
         configuration.addAllowedOrigin("http://www.kenny.com:90/");
