@@ -49,6 +49,30 @@ public class SSOController {
     }
 
     /**
+     * Verify the CAS global user ticket
+     */
+    private boolean verifyUserTicket(String userTicket) {
+        // 0. Verify that the CAS ticket must not be empty
+        if (StringUtils.isBlank(userTicket)) {
+            return false;
+        }
+
+        // 1. Verify the validity of the CAS ticket
+        String userId = redisOperator.get(REDIS_USER_TICKET + ":" + userTicket);
+        if (StringUtils.isBlank(userId)) {
+            return false;
+        }
+
+        // 2. Verify if the user session corresponding to the ticket exists
+        String userRedis = redisOperator.get(REDIS_USER_TOKEN + ":" + userId);
+        if (StringUtils.isBlank(userRedis)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * CAS Unified Login Interface
      * Purpose:
      * 1. Create a global session for the user after login                     -> uniqueToken
