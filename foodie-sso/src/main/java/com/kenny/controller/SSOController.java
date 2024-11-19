@@ -149,4 +149,18 @@ public class SSOController {
 
 
 
+    private String createTmpTicket() {
+        String tmpTicket = UUID.randomUUID().toString().trim();
+
+        try {
+            redisOperator.set(REDIS_TMP_TICKET + ":" + tmpTicket,
+                                MD5Utils.getMD5Str(tmpTicket),
+                                600);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+        return tmpTicket;
+    }
+
+
 }
