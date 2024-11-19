@@ -53,6 +53,8 @@ public class SSOController {
             return "redirect:" + returnUrl + "?tmpTicket=" +  tmpTicket;
         }
 
+        // 2. If the user has never logged in before,
+        // redirect to the CAS unified login page upon the first visit
         return "login";
     }
 
