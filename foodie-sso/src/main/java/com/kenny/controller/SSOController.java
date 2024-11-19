@@ -44,6 +44,14 @@ public class SSOController {
                         HttpServletResponse response) throws NoSuchAlgorithmException {
 
         model.addAttribute("returnUrl", returnUrl);
+        // 1. Obtain the userTicket ticket. If it can be retrieved from the cookie, it indicates that the user has logged in.
+        // At this point, issue a one-time temporary ticket and redirect.
+        String userTicket = getCookie(request, COOKIE_USER_TICKET);
+        boolean isVerified = verifyUserTicket(userTicket);
+        if (isVerified) {
+            String tmpTicket = createTmpTicket();
+            return "redirect:" + returnUrl + "?tmpTicket=" +  tmpTicket;
+        }
 
         return "login";
     }
