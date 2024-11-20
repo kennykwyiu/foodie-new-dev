@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.NoSuchAlgorithmException;
@@ -171,4 +172,19 @@ public class SSOController {
         response.addCookie(cookie);
     }
 
+    private String getCookie(HttpServletRequest request, String key) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null || StringUtils.isBlank(key)) {
+            return null;
+        }
+
+        String cookieValue = null;
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals(key)) {
+                cookieValue = cookie.getValue();
+                break;
+            }
+        }
+        return cookieValue;
+    }
 }
