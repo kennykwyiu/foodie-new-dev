@@ -129,7 +129,7 @@ public class SSOController {
         String userTicket = UUID.randomUUID().toString().trim();
 
         // 3.1 User's global ticket needs to be placed in the CAS cookie
-
+        setCookie(COOKIE_USER_TICKET, userTicket, response);
 
         // 4. Associate userTicket with the user ID, and store it in Redis, indicating that the user has a ticket and can visit various attractions
         redisOperator.set(REDIS_USER_TICKET + ":" + userTicket ,users.getId());
