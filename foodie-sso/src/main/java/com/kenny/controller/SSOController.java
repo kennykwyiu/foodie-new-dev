@@ -102,7 +102,7 @@ public class SSOController {
 
         // 0. Check that the username and password must not be empty
         if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
-            model.addAttribute("errmsg","username or password cannot be empty!");
+            model.addAttribute("errmsg", "username or password cannot be empty!");
             return "login";
         }
 
@@ -112,7 +112,7 @@ public class SSOController {
         Users users = userService.queryUserForLogin(username, md5Str);
 
         if (users == null) {
-            model.addAttribute("errmsg","username or password is incorrect!");
+            model.addAttribute("errmsg", "username or password is incorrect!");
             return "login";
         }
 
