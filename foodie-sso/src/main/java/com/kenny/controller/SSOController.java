@@ -162,5 +162,13 @@ public class SSOController {
         return tmpTicket;
     }
 
+    private void setCookie(String key,
+                           String val,
+                           HttpServletResponse response) {
+        Cookie cookie = new Cookie(key, val);
+        cookie.setDomain("sso.com");
+        cookie.setPath("/");
+        response.addCookie(cookie);
+    }
 
 }
