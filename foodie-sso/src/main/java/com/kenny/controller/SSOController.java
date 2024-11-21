@@ -2,6 +2,7 @@ package com.kenny.controller;
 
 import com.kenny.pojo.Users;
 import com.kenny.service.UserService;
+import com.kenny.utils.JsonResult;
 import com.kenny.utils.JsonUtils;
 import com.kenny.utils.MD5Utils;
 import com.kenny.utils.RedisOperator;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -172,6 +174,21 @@ public class SSOController {
             redisOperator.del(REDIS_TMP_TICKET + ":" + tmpTicket);
         }
 
+        String userTicket = getCookie(request, COOKIE_USER_TICKET);
+        String userId = redisOperator.get(REDIS_USER_TICKET + ":" + userTicket);
+
+        if (StringUtils.isBlank(userId)) {
+            return JsonResult.errorUserTicket("User ticket exception");
+        }
+
+        String userRedis = redisOperator.get(REDIS_USER_TOKEN + ":" + userId);
+
+        if (StringUtils.isBlank(userRedis)) {
+            return JsonResult.errorUserTicket("User ticket exception");
+        }
+
+        return JsonResult.ok(JsonUtils.jsonToPojo(userRedis, UserVO.class));
+    }
 
     private String createTmpTicket() {
         String tmpTicket = UUID.randomUUID().toString().trim();
