@@ -136,6 +136,12 @@ public class SSOController {
 
         // 5. Generate a temporary ticket to return to the calling website, issued by the CAS system as a one-time temporary ticket
         String tmpTicket = createTmpTicket();
+
+        /**
+         * userTicket: Used to indicate a user's login status in the CAS system: logged in
+         * tmpTicket: Issued to the user for one-time validation, with a limited validity period
+         */
+
         /**
          * Example:
          *      When we go to the zoo to play, we buy a unified ticket at the entrance, which is the global ticket and user global session of the CAS system.
