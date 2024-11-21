@@ -132,7 +132,7 @@ public class SSOController {
         setCookie(COOKIE_USER_TICKET, userTicket, response);
 
         // 4. Associate userTicket with the user ID, and store it in Redis, indicating that the user has a ticket and can visit various attractions
-        redisOperator.set(REDIS_USER_TICKET + ":" + userTicket ,users.getId());
+        redisOperator.set(REDIS_USER_TICKET + ":" + userTicket, users.getId());
 
         // 5. Generate a temporary ticket to return to the calling website, issued by the CAS system as a one-time temporary ticket
         String tmpTicket = createTmpTicket();
