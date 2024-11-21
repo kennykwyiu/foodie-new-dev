@@ -154,6 +154,23 @@ public class SSOController {
         return "redirect:" + returnUrl + "?tmpTicket=" +  tmpTicket;
     }
 
+    @PostMapping("/verifyTmpTicket")
+    @ResponseBody
+    public JsonResult verifyTmpTicket(String tmpTicket,
+                                      HttpServletRequest request,
+                                      HttpServletResponse response) throws NoSuchAlgorithmException {
+
+        String tmpTicketValue = redisOperator.get(REDIS_TMP_TICKET + ":" + tmpTicket);
+
+        if (StringUtils.isBlank(tmpTicketValue)) {
+            return JsonResult.errorUserTicket("User ticket exception");
+        }
+
+        if (!tmpTicketValue.equals(MD5Utils.getMD5Str(tmpTicket))) {
+            return JsonResult.errorUserTicket("User ticket exception");
+        } else {
+            redisOperator.del(REDIS_TMP_TICKET + ":" + tmpTicket);
+        }
 
 
     private String createTmpTicket() {
