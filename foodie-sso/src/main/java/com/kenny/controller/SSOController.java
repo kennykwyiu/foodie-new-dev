@@ -175,9 +175,11 @@ public class SSOController {
         if (!tmpTicketValue.equals(MD5Utils.getMD5Str(tmpTicket))) {
             return JsonResult.errorUserTicket("User ticket exception");
         } else {
+            // Destroy the temporary ticket
             redisOperator.del(REDIS_TMP_TICKET + ":" + tmpTicket);
         }
 
+        // 1. Validate and retrieve the user's userTicket
         String userTicket = getCookie(request, COOKIE_USER_TICKET);
         String userId = redisOperator.get(REDIS_USER_TICKET + ":" + userTicket);
 
