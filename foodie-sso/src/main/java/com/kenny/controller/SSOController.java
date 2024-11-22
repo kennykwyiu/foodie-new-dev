@@ -194,6 +194,7 @@ public class SSOController {
             return JsonResult.errorUserTicket("User ticket exception");
         }
 
+        // Validation successful, return OK with user session
         return JsonResult.ok(JsonUtils.jsonToPojo(userRedis, UserVO.class));
     }
 
