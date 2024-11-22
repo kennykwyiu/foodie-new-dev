@@ -187,6 +187,7 @@ public class SSOController {
             return JsonResult.errorUserTicket("User ticket exception");
         }
 
+        // 2. Verify if the user session corresponding to the ticket exists
         String userRedis = redisOperator.get(REDIS_USER_TOKEN + ":" + userId);
 
         if (StringUtils.isBlank(userRedis)) {
