@@ -162,6 +162,8 @@ public class SSOController {
                                       HttpServletRequest request,
                                       HttpServletResponse response) throws NoSuchAlgorithmException {
 
+        // Validate whether the user is logged in using a one-time temporary ticket. If logged in, return user session information to the site.
+        // After use, the temporary ticket needs to be destroyed.
         String tmpTicketValue = redisOperator.get(REDIS_TMP_TICKET + ":" + tmpTicket);
 
         if (StringUtils.isBlank(tmpTicketValue)) {
