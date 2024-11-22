@@ -170,6 +170,8 @@ public class SSOController {
             return JsonResult.errorUserTicket("User ticket exception");
         }
 
+        // 0. If the temporary ticket is valid, it needs to be destroyed,
+        // and retrieve the global userTicket from the CAS cookie to obtain the user session
         if (!tmpTicketValue.equals(MD5Utils.getMD5Str(tmpTicket))) {
             return JsonResult.errorUserTicket("User ticket exception");
         } else {
