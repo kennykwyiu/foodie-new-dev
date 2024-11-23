@@ -235,4 +235,14 @@ public class SSOController {
         }
         return cookieValue;
     }
+
+    private void deleteCookie(String key,
+                                HttpServletResponse response) {
+        Cookie cookie = new Cookie(key, null);
+        cookie.setDomain("sso.com");
+        cookie.setPath("/");
+        cookie.setMaxAge(-1);
+        response.addCookie(cookie);
+    }
+
 }
