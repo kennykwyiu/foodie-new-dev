@@ -10,3 +10,23 @@ PUT - http://192.168.74.137:9200/index_temp
     }
 }
 ```
+
+PUT - http://192.168.74.137:9200/index_mapping
+
+```json
+{
+    "mappings": {
+        "properties": {
+            "realname": {
+                "type": "text",
+                "index": true
+            },
+            "username": {
+                "type": "keyword",
+                "index": false
+            }
+        }
+    }
+}
+```
+
