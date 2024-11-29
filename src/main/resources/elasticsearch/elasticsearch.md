@@ -30,3 +30,22 @@ PUT - http://192.168.74.137:9200/index_mapping
 }
 ```
 
+
+PUT /index_str
+```json
+
+{
+  "mappings": {
+    "properties": {
+      "realname": {
+        "type": "text",
+        "index": true
+      },
+      "username": {
+        "type": "keyword",
+        "index": false
+      }
+    }
+  }
+}
+```
