@@ -183,8 +183,14 @@ POST /_analyze
     "text":"I study in kenny.com"
 }
 ```
+### Analyze with specific sentence in a index
+POST /my_doc/_analyze
 ```json
-
+{
+    "analyzer":"standard",
+    "field": "desc",
+    "text":"I study in kenny.com"
+}
 ```
 ```json
 
