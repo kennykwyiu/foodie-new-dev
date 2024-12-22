@@ -175,7 +175,7 @@ GET /my_doc/_search
 GET /my_doc/_doc/1?_source=id,name
 ### Search item exist or not
 HEAD /my_doc/_doc/1
-### Analyze with specific sentence
+### Analyze with specific sentence (standard)
 POST /_analyze
 ```json
 {
@@ -192,9 +192,60 @@ POST /my_doc/_analyze
     "text":"I study in kenny.com"
 }
 ```
-```json
 
+
+### Elasticsearch Simple Analyzer Example
+
+POST /_analyze
+```json
+{
+    "analyzer": "simple",
+    "text": "My name is Peter Parker, I am a Super Hero. I don't like the Criminals"
+}
 ```
+
+The simple analyzer will:
+- Convert all text to lowercase
+- Remove all punctuation
+- Split text on whitespace
+
+Result tokens:
+```json
+[
+    "my", "name", "is", "peter", "parker", "i", "am", "a", "super", "hero",
+    "i", "dont", "like", "the", "criminals"
+]
+```
+
+
+### Elasticsearch Whitespace Analyzer Example
+
+POST /_analyze
+```json
+{
+    "analyzer": "whitespace",
+    "text": "My name is Peter Parker, I am a Super Hero. I don't like the Criminals"
+}
+```
+
+The whitespace analyzer will:
+- Only split text on whitespace
+- Preserve case (no lowercase conversion)
+- Preserve punctuation
+
+Result tokens:
+```json
+[
+    "My", "name", "is", "Peter", "Parker,", "I", "am", "a", "Super", "Hero.", 
+    "I", "don't", "like", "the", "Criminals"
+]
+```
+
+Note: Unlike the simple analyzer, whitespace analyzer keeps the original case, punctuation, and special characters.
+
+
+
+
 ```json
 
 ```
