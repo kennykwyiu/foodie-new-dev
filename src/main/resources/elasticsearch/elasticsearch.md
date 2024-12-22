@@ -244,6 +244,31 @@ Result tokens:
 Note: Unlike the simple analyzer, whitespace analyzer keeps the original case, punctuation, and special characters.
 
 
+### Elasticsearch Stop Analyzer Example
+
+POST /_analyze
+```json
+{
+    "analyzer": "stop",
+    "text": "My name is Peter Parker, I am a Super Hero. I don't like the Criminals"
+}
+```
+
+The stop analyzer will:
+- Convert text to lowercase
+- Remove stop words (common words like "is", "am", "the", "a")
+- Split on whitespace
+- Remove punctuation
+
+Result tokens:
+```json
+[
+    "name", "peter", "parker", "super", "hero", "dont", "like", "criminals"
+]
+```
+
+Note: Stop words that were removed: "my", "is", "i", "am", "a", "the". The analyzer also converted everything to lowercase and removed punctuation.
+
 
 
 ```json
