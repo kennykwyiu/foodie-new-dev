@@ -169,7 +169,13 @@ PUT /my_doc/_doc/1
 DELETE /my_doc/_doc/5
 ### Search item
 GET /my_doc/_doc/1
-
+### Search all with index
+GET /my_doc/_search
+### Search item with specific columns
+GET /my_doc/_doc/1?_source=id,name
+### Search item exist or not
+HEAD /my_doc/_doc/1
+###
 
 ```json
 ```
