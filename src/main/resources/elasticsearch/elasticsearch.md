@@ -175,9 +175,37 @@ GET /my_doc/_search
 GET /my_doc/_doc/1?_source=id,name
 ### Search item exist or not
 HEAD /my_doc/_doc/1
-###
-
+### Analyze with specific sentence
+POST /_analyze
 ```json
+{
+    "analyzer":"standard",
+    "text":"I study in kenny.com"
+}
+```
+```json
+
+```
+```json
+
+```
+```json
+
+```
+```json
+
+```
+```json
+
+```
+```json
+
+```
+```json
+
+```
+```json
+
 ```
 ```json
 
