@@ -165,7 +165,10 @@ PUT /my_doc/_doc/1
     "create_date": "2019-12-30"
 }
 ```
-
+### Delete a row
+DELETE /my_doc/_doc/5
+### Search item
+GET /my_doc/_doc/1
 
 
 ```json
