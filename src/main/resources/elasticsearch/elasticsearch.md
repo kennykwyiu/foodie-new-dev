@@ -270,6 +270,30 @@ Result tokens:
 Note: Stop words that were removed: "my", "is", "i", "am", "a", "the". The analyzer also converted everything to lowercase and removed punctuation.
 
 
+### Elasticsearch Keyword Analyzer Example
+
+POST /_analyze
+```json
+{
+    "analyzer": "keyword",
+    "text": "My name is Peter Parker, I am a Super Hero. I don't like the Criminals"
+}
+```
+
+The keyword analyzer will:
+- Treat the entire text as a single token
+- Preserve case, spaces, and punctuation
+- No tokenization occurs
+
+Result token:
+```json
+[
+    "My name is Peter Parker, I am a Super Hero. I don't like the Criminals"
+]
+```
+
+Note: The keyword analyzer is useful when you want to match exact phrases or when dealing with structured content like IDs, email addresses, or zip codes where you don't want any text analysis to be performed.
+
 
 ```json
 
