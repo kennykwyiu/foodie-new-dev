@@ -294,6 +294,84 @@ Result token:
 
 Note: The keyword analyzer is useful when you want to match exact phrases or when dealing with structured content like IDs, email addresses, or zip codes where you don't want any text analysis to be performed.
 
+### IK_MAX_WORD Analyzer Example
+
+POST /_analyze
+```json
+{
+    "analyzer": "ik_max_word",
+    "text": "中华人民共和国国歌"
+}
+```
+
+The ik_max_word analyzer will:
+- Break down text into as many possible words/combinations as possible
+- Result example: ["中华人民共和国", "中华人民", "中华", "华人", "人民共和国", "人民", "共和国", "国歌"]
+
+### IK_SMART Analyzer Example
+
+POST /_analyze
+```json
+{
+    "analyzer": "ik_smart",
+    "text": "中华人民共和国国歌"
+}
+```
+
+The ik_smart analyzer will:
+- Break down text in the most intelligent way
+- Only output the most likely words
+- Result example: ["中华人民共和国", "国歌"]
+
+
+
+### Elasticsearch Mapping for "shop" Index
+
+Field mapping explanations:
+
+1. **id**
+   - Type: `long`
+   - For storing large integer values
+
+2. **age**
+   - Type: `integer`
+   - For storing whole numbers
+
+3. **username**
+   - Type: `keyword`
+   - Exact match field, not tokenized
+   - Good for filtering and aggregations
+
+4. **nickname**
+   - Type: `text`
+   - Analyzer: `ik_max_word`
+   - Full-text search with Chinese language support
+   - Will be broken into tokens for searching
+
+5. **money**
+   - Type: `float`
+   - For storing decimal numbers
+
+6. **desc**
+   - Type: `text`
+   - Analyzer: `ik_max_word`
+   - Full-text search with Chinese language support
+   - Will be broken into tokens for searching
+
+7. **sex**
+   - Type: `byte`
+   - Small integer values (-128 to 127)
+
+8. **birthday**
+   - Type: `date`
+   - For storing date values
+
+9. **face**
+   - Type: `text`
+   - `index: false` - This field is not searchable
+   - Typically used for storing URLs or paths that don't need to be searched
+
+
 
 ```json
 
