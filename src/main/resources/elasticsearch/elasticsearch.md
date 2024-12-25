@@ -449,6 +449,38 @@ The exists query cannot be used to search for specific values like "小". For va
 - term query
 - wildcard query
 
+
+### Elasticsearch Source Filtering Query Explanation
+
+#### Endpoint
+```
+GET /shop/_search
+```
+
+#### Query Structure
+```json
+{
+  "query": {
+    "match_all": {},
+  },
+  "_source": ["id", "nickname", "age"]
+}
+```
+
+#### Explanation:
+- `match_all`: Returns all documents in the index
+- `_source`: Filters which fields to return in the results
+   - Only returns: `id`, `nickname`, and `age`
+   - Other fields will be excluded from results
+   - Reduces response size and network bandwidth
+
+#### Benefits:
+- More efficient than retrieving all fields
+- Returns only necessary data
+- Useful for large documents where only specific fields are needed
+- Improves query performance
+
+
 ```json
 
 ```
