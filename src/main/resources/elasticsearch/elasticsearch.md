@@ -373,6 +373,82 @@ Field mapping explanations:
 
 
 
+### Elasticsearch Search Query Explanation
+
+#### Endpoint
+```
+GET /shop/_search
+```
+
+#### Query Structure
+```json
+{
+  "query": {
+    "match": {
+      "desc": "程式"
+    }
+  }
+}
+```
+
+#### Explanation:
+- This query searches in the `shop` index
+- Uses the `match` query type which is best for full-text search
+- Searches in the `desc` field
+- Looks for documents containing the term "程式"
+- Will return all documents where the description contains "程式", with relevance scoring
+- The `match` query will analyze the search term using the same analyzer that was used during indexing (in this case, ik_max_word)
+
+#### Expected Results:
+- Returns matching documents sorted by relevance score
+- Each result will include the full document and metadata
+- Results will include any documents where the description contains the word "程式" or its analyzed tokens
+
+### Elasticsearch Exists Query Explanation
+
+#### Syntax
+```json
+GET /index/_search
+{
+  "query": {
+    "exists": {
+      "field": "field_name"
+    }
+  }
+}
+```
+
+#### Purpose
+- Finds documents where the specified field exists
+- Returns documents that have any non-null value in the specified field
+- Useful for finding documents with or without certain fields
+
+#### Example
+```json
+GET /shop/_search
+{
+  "query": {
+    "exists": {
+      "field": "nickname"
+    }
+  }
+}
+```
+
+#### Key Points:
+- Does NOT search for specific values
+- Only checks if field exists and is not null
+- Common uses:
+   - Finding documents with missing fields
+   - Quality control of data
+   - Filtering out incomplete records
+
+#### Note:
+The exists query cannot be used to search for specific values like "小". For value searches, use:
+- match query
+- term query
+- wildcard query
+
 ```json
 
 ```
