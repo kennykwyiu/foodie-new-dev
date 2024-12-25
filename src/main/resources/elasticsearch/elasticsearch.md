@@ -524,6 +524,46 @@ GET /shop/_search
 - And so on...
 
 
+### Elasticsearch Terms Query Explanation
+
+#### Endpoint
+```
+GET /shop/_search
+```
+
+#### Query Structure
+```json
+{
+  "query": {
+    "terms": {
+      "desc": ["開發", "交易"]
+    }
+  },
+  "_source": ["id", "nickname", "desc"],
+  "from": 0,
+  "size": 10
+}
+```
+
+#### Explanation:
+- `terms`: Matches documents that contain one or more exact terms
+    - Looking for either "開發" OR "交易" in the desc field
+    - Terms query is not analyzed (exact match)
+    - Case sensitive and requires exact matches
+
+#### Query Components:
+- `_source`: Only returns specified fields:
+    - id
+    - nickname
+    - desc
+- `from`: Starts from first result (0)
+- `size`: Returns up to 10 documents
+
+#### Note:
+- Different from `match` query as it doesn't analyze the search terms
+- Documents matching either term will be returned
+- No relevance scoring based on term frequency
+
 ```json
 
 ```
