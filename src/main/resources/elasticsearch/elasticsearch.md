@@ -377,7 +377,7 @@ Field mapping explanations:
 
 #### Endpoint
 ```
-GET /shop/_search
+POST /shop/_search
 ```
 
 #### Query Structure
@@ -407,8 +407,9 @@ GET /shop/_search
 ### Elasticsearch Exists Query Explanation
 
 #### Syntax
+POST /index/_search
 ```json
-GET /index/_search
+
 {
   "query": {
     "exists": {
@@ -416,6 +417,7 @@ GET /index/_search
     }
   }
 }
+
 ```
 
 #### Purpose
@@ -424,8 +426,8 @@ GET /index/_search
 - Useful for finding documents with or without certain fields
 
 #### Example
+POST /shop/_search
 ```json
-GET /shop/_search
 {
   "query": {
     "exists": {
@@ -454,14 +456,14 @@ The exists query cannot be used to search for specific values like "小". For va
 
 #### Endpoint
 ```
-GET /shop/_search
+POST /shop/_search
 ```
 
 #### Query Structure
 ```json
 {
   "query": {
-    "match_all": {},
+    "match_all": {}
   },
   "_source": ["id", "nickname", "age"]
 }
@@ -479,6 +481,47 @@ GET /shop/_search
 - Returns only necessary data
 - Useful for large documents where only specific fields are needed
 - Improves query performance
+
+
+
+### Elasticsearch Pagination Query Explanation
+
+#### Endpoint
+```
+GET /shop/_search
+```
+
+#### Query Structure
+```json
+{
+  "query": {
+    "match_all": {},
+  },
+  "_source": ["id", "nickname", "age"],
+  "from": 0,
+  "size": 10
+}
+```
+
+#### Explanation:
+- `match_all`: Returns all documents in the index
+- `_source`: Filters returned fields to only:
+   - `id`
+   - `nickname`
+   - `age`
+- `from`: Starting point for results (0 = first result)
+- `size`: Number of results to return (10 documents)
+
+#### Pagination Parameters:
+- `from`: Offset from the first result (0-based)
+- `size`: Maximum number of results to return
+- Default size is usually 10 if not specified
+- Common usage for implementing pagination in applications
+
+#### Example:
+- `from: 0, size: 10` returns results 1-10
+- `from: 10, size: 10` would return results 11-20
+- And so on...
 
 
 ```json
