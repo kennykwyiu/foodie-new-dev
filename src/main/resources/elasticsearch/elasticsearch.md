@@ -495,7 +495,7 @@ GET /shop/_search
 ```json
 {
   "query": {
-    "match_all": {},
+    "match_all": {}
   },
   "_source": ["id", "nickname", "age"],
   "from": 0,
