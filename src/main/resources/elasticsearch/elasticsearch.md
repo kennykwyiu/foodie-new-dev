@@ -684,6 +684,45 @@ POST /shop/_search
 - Will match documents containing either "交易" OR "系統"
 - Results sorted by relevance score
 
+### Elasticsearch Match Query with AND Operator Explanation
+
+#### Endpoint
+```
+POST /shop/_search
+```
+
+#### Query Structure
+```json
+{
+  "query": {
+    "match": {
+      "desc": {
+        "query": "交易系統",
+        "operator": "and"
+      }
+    }
+  },
+  "_source": ["id", "nickname", "desc"],
+  "from": 0,
+  "size": 10
+}
+```
+
+#### Explanation:
+- `match` with `operator: "and"`:
+    - Requires ALL terms to be present
+    - Must contain both "交易" AND "系統"
+    - Different from default OR behavior
+    - Still analyzes the terms
+    - Order doesn't matter
+    - Terms don't need to be adjacent
+
+#### Key Differences:
+- More restrictive than default match query
+- Less restrictive than match_phrase
+- Documents must contain all specified terms
+- Better for filtering when all terms are required
+
 ```json
 
 ```
