@@ -488,7 +488,7 @@ POST /shop/_search
 
 #### Endpoint
 ```
-GET /shop/_search
+POST /shop/_search
 ```
 
 #### Query Structure
@@ -528,7 +528,7 @@ GET /shop/_search
 
 #### Endpoint
 ```
-GET /shop/_search
+POST /shop/_search
 ```
 
 #### Query Structure
@@ -569,7 +569,7 @@ GET /shop/_search
 
 #### Endpoint
 ```
-GET /shop/_search
+POST /shop/_search
 ```
 
 #### Query Structure
@@ -612,7 +612,7 @@ GET /shop/_search
 
 #### Endpoint
 ```
-GET /shop/_search
+POST /shop/_search
 ```
 
 #### Query Structure
@@ -648,6 +648,41 @@ GET /shop/_search
     - Words are within 2 positions of each other
     - Words appear in the specified order
 
+### Elasticsearch Match Query Explanation
+
+#### Endpoint
+```
+POST /shop/_search
+```
+
+#### Query Structure
+```json
+{
+  "query": {
+    "match": {
+      "desc": "交易系統"
+    }
+  },
+  "_source": ["id", "nickname", "desc"],
+  "from": 0,
+  "size": 10
+}
+```
+
+#### Explanation:
+- `match`: Standard full-text search query
+    - Analyzes the search terms "交易系統"
+    - Matches documents containing either or both terms
+    - Uses relevance scoring
+    - More flexible than `match_phrase`
+    - Order doesn't matter
+    - Terms don't need to be adjacent
+
+#### Differences from Previous Queries:
+- More flexible than `match_phrase`
+- No slop parameter needed
+- Will match documents containing either "交易" OR "系統"
+- Results sorted by relevance score
 
 ```json
 
