@@ -723,6 +723,26 @@ POST /shop/_search
 - Documents must contain all specified terms
 - Better for filtering when all terms are required
 
+#### Default OR Operator
+// This is default, can be omitted
+```json
+{
+  "query": {
+    "match": {
+      "desc": {
+        "query": "交易系統",
+        "operator": "or"  
+      }
+    }
+  }
+}
+```
+- Matches if ANY term is found
+- Will return documents with either "交易" OR "系統"
+- More results than AND operator
+- Better for broader searches
+- Higher recall, lower precision
+
 ```json
 
 ```
