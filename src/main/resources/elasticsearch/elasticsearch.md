@@ -564,6 +564,51 @@ GET /shop/_search
 - Documents matching either term will be returned
 - No relevance scoring based on term frequency
 
+
+### Elasticsearch Match Phrase Query Explanation
+
+#### Endpoint
+```
+GET /shop/_search
+```
+
+#### Query Structure
+```json
+{
+  "query": {
+    "match_phrase": {
+      "desc": {
+        "query": "程式 交易"
+      }
+    }
+  },
+  "_source": ["id", "nickname", "desc"],
+  "from": 0,
+  "size": 10
+}
+```
+
+#### Explanation:
+- `match_phrase`: Matches exact phrases in the specified order
+    - Looks for "程式 交易" as a complete phrase
+    - Words must appear together and in the same order
+    - More strict than regular `match` query
+
+#### Query Components:
+- `_source`: Returns only:
+    - id
+    - nickname
+    - desc
+- `from`: Starts from first result
+- `size`: Returns up to 10 documents
+
+#### Difference from Terms Query:
+- Terms query matches individual words independently
+- Match phrase requires words to be adjacent and in order
+- Better for exact phrase matching
+
+
+
 ```json
 
 ```
