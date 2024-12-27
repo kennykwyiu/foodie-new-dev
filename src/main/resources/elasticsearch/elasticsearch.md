@@ -608,6 +608,46 @@ GET /shop/_search
 - Better for exact phrase matching
 
 
+### Elasticsearch Match Phrase Query with Slop Explanation
+
+#### Endpoint
+```
+GET /shop/_search
+```
+
+#### Query Structure
+```json
+{
+  "query": {
+    "match_phrase": {
+      "desc": {
+        "query": "提供 交易",
+        "slop": 2
+      }
+    }
+  },
+  "_source": ["id", "nickname", "desc"],
+  "from": 0,
+  "size": 10
+}
+```
+
+#### Explanation:
+- `match_phrase`: Matches phrases with flexibility
+- `slop`: Allows words to be this many positions apart
+    - slop: 2 means words can have up to 2 other words between them
+    - Will match "提供程式交易" or "提供自動交易"
+    - More flexible than exact phrase matching
+    - Order still matters, but words don't need to be adjacent
+
+#### Query Components:
+- `_source`: Returns specified fields only
+- `from` and `size`: Standard pagination parameters
+- Will match documents where:
+    - Both "提供" and "交易" appear
+    - Words are within 2 positions of each other
+    - Words appear in the specified order
+
 
 ```json
 
