@@ -743,6 +743,44 @@ POST /shop/_search
 - Better for broader searches
 - Higher recall, lower precision
 
+### Elasticsearch Minimum Should Match Explanation
+
+#### Query Structure
+```json
+{
+  "query": {
+    "match": {
+      "desc": {
+        "query": "孫七喜歡交易",
+        "minimum_should_match": "2"
+      }
+    }
+  }
+}
+```
+
+#### Number Format Examples:
+```
+minimum_should_match: "2"      // Must match at least 2 terms
+minimum_should_match: "3"      // Must match at least 3 terms
+minimum_should_match: "1"      // Must match at least 1 term
+```
+
+#### Percentage Format Examples:
+```
+minimum_should_match: "75%"    // Must match 75% of terms
+minimum_should_match: "50%"    // Must match half of terms
+minimum_should_match: "25%"    // Must match quarter of terms
+```
+
+#### In This Query:
+- Search terms: "孫七喜歡交易" (4 terms)
+- `minimum_should_match: "2"`:
+    - Must match at least 2 of these terms
+    - More flexible than AND operator
+    - More restrictive than OR operator
+    - Good balance between precision and recall
+
 ```json
 
 ```
