@@ -781,6 +781,44 @@ minimum_should_match: "25%"    // Must match quarter of terms
     - More restrictive than OR operator
     - Good balance between precision and recall
 
+### Elasticsearch IDs Query Explanation
+
+#### Endpoint
+```
+POST /shop/_search
+```
+
+#### Query Structure
+```json
+{
+  "query": {
+    "ids": {
+      "values": ["1001", "1003"]
+    }
+  },
+  "_source": ["id", "nickname", "desc"]
+}
+```
+
+#### Explanation:
+- `ids`: Retrieves documents based on their IDs
+    - Simple and efficient lookup query
+    - Fetches documents with specified IDs only
+    - Order of IDs doesn't affect relevance scoring
+    - Exact match only (no analysis or tokenization)
+
+#### Query Components:
+- `values`: Array of document IDs to retrieve
+- `_source`: Filters returned fields to:
+    - id
+    - nickname
+    - desc
+
+#### Use Cases:
+- Direct document retrieval by ID
+- Batch document retrieval
+- More efficient than multiple GET requests
+
 ```json
 
 ```
