@@ -977,6 +977,63 @@ WHERE (description LIKE '%專精%' OR description LIKE '%開發%'
 - SQL is exact matching
 - Elasticsearch includes relevance scoring
 
+### Elasticsearch Boolean Query with Should Conditions Explanation
+
+#### Endpoint
+```
+POST /shop/_search
+```
+
+#### Query Structure
+```json
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "multi_match": {
+            "query": "專精開發",
+            "fields": ["desc", "nickname"]
+          }
+        },
+        {
+          "term": {
+            "sex": 0
+          }
+        },
+        {
+          "term": {
+            "birthday": "1999-01-14"
+          }
+        }
+      ]
+    }
+  }
+}
+```
+
+#### Equivalent SQL Query
+```sql
+SELECT id, nickname, sex, description, birthday
+FROM shop
+WHERE description LIKE '%專精%' OR description LIKE '%開發%'
+   OR nickname LIKE '%專精%' OR nickname LIKE '%開發%'
+   OR sex = 0
+   OR birthday = '1999-01-14';
+```
+
+#### Key Differences from Previous Must Query:
+- `should`: Any condition can match (OR logic)
+- Documents matching more conditions get higher scores
+- More flexible than `must`
+- Returns more results than `must`
+- Similar to SQL's OR operator
+
+#### Scoring:
+- Documents matching multiple conditions score higher
+- More matches = higher relevance
+- Unlike SQL, maintains relevance scoring
+
 ```json
 
 ```
