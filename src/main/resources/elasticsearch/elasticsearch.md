@@ -862,6 +862,47 @@ GET /shop/_search
 - Combines results from multiple fields
 - Relevance scoring considers matches in any field
 
+
+### Elasticsearch Multi Match Query with Boost Explanation
+
+#### Endpoint
+```
+GET /shop/_search
+```
+
+#### Query Structure
+```json
+{
+  "query": {
+    "multi_match": {
+      "query": "小芳喜歡專精",
+      "fields": ["desc", "nickname^10"]
+    }
+  },
+  "_source": ["id", "nickname", "age", "desc"]
+}
+```
+
+#### Explanation:
+- `multi_match`: Searches multiple fields
+    - Search terms: "小芳喜歡專精"
+    - Fields searched:
+        - desc (normal weight)
+        - nickname (boosted by 10)
+
+#### Field Boost (^10):
+- `nickname^10`: Boosts nickname field importance
+    - Matches in nickname field are 10x more important
+    - Affects relevance scoring
+    - Higher scores for matches in nickname vs desc
+    - Prioritizes documents where "小芳" appears in nickname
+
+#### Query Components:
+- `_source`: Returns specified fields only
+- Boosting useful when:
+    - Some fields are more important
+    - Need to prioritize matches in certain fields
+    - Want to influence relevance scoring
 ```json
 
 ```
