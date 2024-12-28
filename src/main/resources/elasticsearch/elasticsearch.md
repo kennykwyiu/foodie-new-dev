@@ -961,7 +961,21 @@ POST /shop/_search
 - Complex search with multiple criteria
 - Combination of full-text search and exact matches
 - Precise filtering of results
+#### Equivalent SQL Query
+```sql
+SELECT id, nickname, sex, description, birthday
+FROM shop
+WHERE (description LIKE '%專精%' OR description LIKE '%開發%'
+   OR nickname LIKE '%專精%' OR nickname LIKE '%開發%')
+  AND sex = 0
+  AND birthday = '1999-01-14';
+```
 
+#### Key Differences:
+- SQL uses LIKE for text search (less sophisticated)
+- Elasticsearch provides better full-text search capabilities
+- SQL is exact matching
+- Elasticsearch includes relevance scoring
 
 ```json
 
