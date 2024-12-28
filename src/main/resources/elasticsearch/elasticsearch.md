@@ -824,7 +824,7 @@ POST /shop/_search
 
 #### Endpoint
 ```
-GET /shop/_search
+POSt /shop/_search
 ```
 
 #### Query Structure
@@ -867,7 +867,7 @@ GET /shop/_search
 
 #### Endpoint
 ```
-GET /shop/_search
+POST /shop/_search
 ```
 
 #### Query Structure
@@ -903,6 +903,66 @@ GET /shop/_search
     - Some fields are more important
     - Need to prioritize matches in certain fields
     - Want to influence relevance scoring
+
+### Elasticsearch Boolean Query with Multiple Conditions Explanation
+
+#### Endpoint
+```
+POST /shop/_search
+```
+
+#### Query Structure
+```json
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "multi_match": {
+            "query": "專精開發",
+            "fields": ["desc", "nickname"]
+          }
+        },
+        {
+          "term": {
+            "sex": 0
+          }
+        },
+        {
+          "term": {
+            "birthday": "1999-01-14"
+          }
+        }
+      ]
+    }
+  }
+}
+```
+
+#### Explanation:
+- `bool`: Combines multiple query conditions
+- `must`: All conditions must match (AND logic)
+    1. `multi_match`: Searches for "專精開發" in:
+        - desc field
+        - nickname field
+    2. `term`: Exact match for sex = 0 (female)
+    3. `term`: Exact match for birthday = "1999-01-14"
+
+#### Query Components:
+- All three conditions must be satisfied
+- `_source`: Returns only specified fields:
+    - id
+    - nickname
+    - sex
+    - desc
+    - birthday
+
+#### Use Case:
+- Complex search with multiple criteria
+- Combination of full-text search and exact matches
+- Precise filtering of results
+
+
 ```json
 
 ```
