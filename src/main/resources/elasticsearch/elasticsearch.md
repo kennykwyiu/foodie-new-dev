@@ -819,6 +819,49 @@ POST /shop/_search
 - Batch document retrieval
 - More efficient than multiple GET requests
 
+
+### Elasticsearch Multi Match Query Explanation
+
+#### Endpoint
+```
+GET /shop/_search
+```
+
+#### Query Structure
+```json
+{
+  "query": {
+    "multi_match": {
+      "query": "程式",
+      "fields": ["desc", "nickname"]
+    }
+  },
+  "_source": ["id", "nickname", "age", "desc"]
+}
+```
+
+#### Explanation:
+- `multi_match`: Searches multiple fields with one query
+    - Searches for "程式" in both:
+        - desc field
+        - nickname field
+    - Same search term applied to different fields
+    - Returns documents matching in either field
+
+#### Query Components:
+- `query`: The search term ("程式")
+- `fields`: Array of fields to search in
+- `_source`: Returns only specified fields:
+    - id
+    - nickname
+    - age
+    - desc
+
+#### Benefits:
+- More efficient than multiple single-field queries
+- Combines results from multiple fields
+- Relevance scoring considers matches in any field
+
 ```json
 
 ```
