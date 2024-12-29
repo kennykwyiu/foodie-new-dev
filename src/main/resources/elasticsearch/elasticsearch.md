@@ -1034,6 +1034,61 @@ WHERE description LIKE '%專精%' OR description LIKE '%開發%'
 - More matches = higher relevance
 - Unlike SQL, maintains relevance scoring
 
+### Elasticsearch Boolean Query with Must Not Conditions Explanation
+
+#### Endpoint
+```
+POST /shop/_search
+```
+
+#### Query Structure
+```json
+{
+  "query": {
+    "bool": {
+      "must_not": [
+        {
+          "multi_match": {
+            "query": "專精開發",
+            "fields": ["desc", "nickname"]
+          }
+        },
+        {
+          "term": {
+            "sex": 0
+          }
+        },
+        {
+          "term": {
+            "birthday": "1999-01-15"
+          }
+        }
+      ]
+    }
+  }
+}
+```
+
+#### Equivalent SQL Query
+```sql
+SELECT id, nickname, sex, description, birthday
+FROM shop
+WHERE (description NOT LIKE '%專精%' AND description NOT LIKE '%開發%'
+   AND nickname NOT LIKE '%專精%' AND nickname NOT LIKE '%開發%')
+   AND sex != 0
+   AND birthday != '1999-01-15';
+```
+
+#### Key Points:
+- `must_not`: Excludes documents matching any condition (NOT logic)
+- Excludes documents where:
+    - desc or nickname contains "專精" or "開發"
+    - sex equals 0
+    - birthday equals "1999-01-15"
+- Similar to SQL's NOT and != operators
+- Returns documents that don't match any of the conditions
+
+
 ```json
 
 ```
