@@ -1141,6 +1141,66 @@ ORDER BY
 - SQL ORDER BY approximates should behavior
 
 
+### Elasticsearch Boolean Query with Boost Explanation
+
+#### Endpoint
+```
+POST /shop/_search
+```
+
+#### Query Structure
+```json
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "match": {
+            "desc": {
+              "query": "專精",
+              "boost": 2
+            }
+          }
+        },
+        {
+          "match": {
+            "desc": {
+              "query": "教授",
+              "boost": 10
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+```
+
+#### Equivalent SQL Query
+```sql
+SELECT id, nickname, description
+FROM shop
+WHERE description LIKE '%專精%' 
+   OR description LIKE '%教授%'
+ORDER BY 
+  CASE 
+    WHEN description LIKE '%教授%' THEN 10
+    WHEN description LIKE '%專精%' THEN 2
+    ELSE 0 
+  END DESC
+LIMIT 10 OFFSET 0;
+```
+
+#### Key Points:
+- `boost`: Affects relevance scoring
+    - "教授" matches get 10x boost
+    - "專精" matches get 2x boost
+    - Higher boost = higher ranking in results
+- `should`: Either term can match
+- Empty `sort`: Uses relevance scoring
+- `from` and `size`: Standard pagination
+- SQL equivalent is approximate (SQL can't exactly replicate Elasticsearch scoring)
+
 
 ```json
 
