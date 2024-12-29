@@ -1088,6 +1088,59 @@ WHERE (description NOT LIKE '%專精%' AND description NOT LIKE '%開發%'
 - Similar to SQL's NOT and != operators
 - Returns documents that don't match any of the conditions
 
+### Elasticsearch Complex Boolean Query Explanation
+
+#### Endpoint
+```
+POST /shop/_search
+```
+
+#### Query Structure
+```json
+{
+  "query": {
+    "bool": {
+      "must": [
+        { "match": { "desc": "諮詢" } },
+        { "match": { "nickname": "孫七" } }
+      ],
+      "should": [
+        { "match": { "sex": 1 } }
+      ],
+      "must_not": [
+        { "term": { "birthday": "1999-01-15" } }
+      ]
+    }
+  }
+}
+```
+
+#### Equivalent SQL Query
+```sql
+SELECT id, nickname, sex, description, birthday
+FROM shop
+WHERE description LIKE '%諮詢%'
+  AND nickname = '孫七'
+  AND birthday != '1999-01-15'
+ORDER BY 
+  CASE WHEN sex = 1 THEN 1 ELSE 0 END DESC;
+```
+
+#### Explanation:
+- `must`: Documents MUST match these conditions (AND)
+    - desc contains "諮詢"
+    - nickname is "孫七"
+- `should`: Boosts score if matches (optional)
+    - Higher score if sex = 1
+- `must_not`: Documents must NOT match (NOT)
+    - Excludes birthday = "1999-01-15"
+
+#### Key Differences from SQL:
+- Elasticsearch provides relevance scoring
+- `should` clause affects ranking but not filtering
+- SQL ORDER BY approximates should behavior
+
+
 
 ```json
 
