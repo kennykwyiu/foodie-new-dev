@@ -1262,6 +1262,61 @@ ORDER BY relevance_score DESC;
     - More sophisticated than SQL LIKE
 
 
+### Elasticsearch Range Query Operators
+
+#### All Range Operators
+```json
+{
+  "range": {
+    "field_name": {
+      "gt":  100,     // greater than
+      "gte": 100,     // greater than or equal to
+      "lt":  200,     // less than
+      "lte": 200      // less than or equal to
+    }
+  }
+}
+```
+
+#### Examples with Money Range
+```json
+{
+  "post_filter": {
+    "range": {
+      "money": {
+        "gte": 1000,  // money >= 1000
+        "lte": 8000   // money <= 8000
+      }
+    }
+  }
+}
+```
+
+#### Equivalent SQL Comparisons
+```sql
+-- gt (>)
+WHERE money > 1000
+
+-- gte (>=)
+WHERE money >= 1000
+
+-- lt (<)
+WHERE money < 8000
+
+-- lte (<=)
+WHERE money <= 8000
+
+-- Combined
+WHERE money >= 1000 AND money <= 8000
+```
+
+#### Common Use Cases:
+- Price ranges
+- Date ranges
+- Numeric value filtering
+- Age restrictions
+- Score thresholds
+
 
 ```json
 
