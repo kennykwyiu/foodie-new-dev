@@ -1201,6 +1201,67 @@ LIMIT 10 OFFSET 0;
 - `from` and `size`: Standard pagination
 - SQL equivalent is approximate (SQL can't exactly replicate Elasticsearch scoring)
 
+### Elasticsearch Query with Post Filter Explanation
+
+#### Endpoint
+```
+POST /shop/_search
+```
+
+#### Query Structure
+```json
+{
+  "query": {
+    "match": {
+      "desc": "專門"
+    }
+  },
+  "post_filter": {
+    "range": {
+      "money": {
+        "gt": 1000,
+        "lt": 8000
+      }
+    }
+  }
+}
+```
+
+#### Detailed Explanation:
+1. Query Phase:
+    - First executes `match` query on "desc" field
+    - Finds documents containing "專門"
+    - Calculates relevance scores
+
+2. Post Filter Phase:
+    - Applied after query execution
+    - Filters results by money range
+    - Only keeps documents where:
+        - money > 1000
+        - money < 8000
+    - Doesn't affect relevance scoring
+
+#### Equivalent SQL Query
+```sql
+SELECT *
+FROM shop
+WHERE description LIKE '%專門%'
+  AND money > 1000 
+  AND money < 8000
+ORDER BY relevance_score DESC;
+```
+
+#### Key Differences:
+- Post filter vs WHERE clause:
+    - Post filter applies after scoring
+    - Doesn't affect relevance calculation
+    - More efficient for faceted search
+- Elasticsearch scoring:
+    - Provides relevance ranking
+    - Better full-text search capabilities
+    - More sophisticated than SQL LIKE
+
+
 
 ```json
 
