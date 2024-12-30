@@ -1317,6 +1317,58 @@ WHERE money >= 1000 AND money <= 8000
 - Age restrictions
 - Score thresholds
 
+### Elasticsearch Query with Post Filter Term Explanation
+
+#### Endpoint
+```
+POST /shop/_search
+```
+
+#### Query Structure
+```json
+{
+  "query": {
+    "match": {
+      "desc": "專門"
+    }
+  },
+  "post_filter": {
+    "term": {
+      "sex": 1
+    }
+  }
+}
+```
+
+#### Detailed Explanation:
+1. Query Phase:
+    - Executes `match` query for "專門" in desc field
+    - Calculates relevance scores
+    - Full-text search with analysis
+
+2. Post Filter Phase:
+    - Applied after query execution
+    - Filters for exact match sex = 1 (male)
+    - Doesn't affect relevance scoring
+
+#### Equivalent SQL Query
+```sql
+SELECT *
+FROM shop
+WHERE description LIKE '%專門%'
+  AND sex = 1
+ORDER BY relevance_score DESC;
+```
+
+#### Key Points:
+- Post filter applies after scoring
+- Term query requires exact match
+- More efficient than including in main query when:
+    - Need to maintain original relevance scores
+    - Doing faceted search
+    - Filter is optional or dynamic
+
+
 
 
 ```json
