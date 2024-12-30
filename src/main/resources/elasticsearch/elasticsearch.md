@@ -1318,6 +1318,7 @@ WHERE money >= 1000 AND money <= 8000
 - Score thresholds
 
 
+
 ```json
 
 ```
