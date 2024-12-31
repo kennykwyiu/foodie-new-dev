@@ -1368,6 +1368,54 @@ ORDER BY relevance_score DESC;
     - Doing faceted search
     - Filter is optional or dynamic
 
+### Elasticsearch Query with Sort Explanation
+
+#### Endpoint
+```
+POST /shop/_search
+```
+
+#### Query Structure
+```json
+{
+  "query": {
+    "match": {
+      "desc": "專門"
+    }
+  },
+  "sort": [
+    {
+      "age": "asc"
+    }
+  ]
+}
+```
+
+#### Detailed Explanation:
+1. Query Phase:
+    - Executes `match` query for "專門" in desc field
+    - Performs full-text search with analysis
+
+2. Sort Phase:
+    - Sorts results by age in ascending order
+    - Overrides default relevance score sorting
+
+#### Equivalent SQL Query
+```sql
+SELECT *
+FROM shop
+WHERE description LIKE '%專門%'
+ORDER BY age ASC;
+```
+
+#### Key Points:
+- Default sort is by relevance score (_score)
+- Explicit sort overrides default scoring order
+- `asc`: ascending order (lowest to highest)
+- Can also use `desc` for descending order
+- Multiple sort criteria possible
+
+
 
 
 
