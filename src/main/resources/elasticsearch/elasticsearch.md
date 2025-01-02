@@ -1415,6 +1415,56 @@ ORDER BY age ASC;
 - Can also use `desc` for descending order
 - Multiple sort criteria possible
 
+### Elasticsearch Multiple Sort Fields Explanation
+
+#### Endpoint
+```
+POST /shop/_search
+```
+
+#### Query Structure
+```json
+{
+  "query": {
+    "match": {
+      "desc": "專門"
+    }
+  },
+  "sort": [
+    {
+      "money": "asc"
+    },
+    {
+      "age": "asc"
+    }
+  ]
+}
+```
+
+#### Detailed Explanation:
+1. Primary Sort:
+    - First sorts by money in ascending order
+    - Lowest money values appear first
+
+2. Secondary Sort:
+    - When money values are equal
+    - Then sorts by age in ascending order
+    - Acts as a tiebreaker
+
+#### Equivalent SQL Query
+```sql
+SELECT *
+FROM shop
+WHERE description LIKE '%專門%'
+ORDER BY money ASC, age ASC;
+```
+
+#### Key Points:
+- Sort order is applied sequentially
+- Second sort only affects records with equal first sort values
+- Both fields use ascending order (lowest to highest)
+- Can mix ascending and descending if needed
+
 
 
 
