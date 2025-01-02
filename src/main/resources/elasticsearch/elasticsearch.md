@@ -1465,28 +1465,50 @@ ORDER BY money ASC, age ASC;
 - Both fields use ascending order (lowest to highest)
 - Can mix ascending and descending if needed
 
+### Elasticsearch Sort by Keyword Field Explanation
 
-
-
-
-```json
-
+#### Endpoint
 ```
-```json
-
+POST /shop/_search
 ```
-```json
 
-```
+#### Query Structure
 ```json
-
+{
+  "query": {
+    "match": {
+      "desc": "專門"
+    }
+  },
+  "sort": [
+    {
+      "username": "desc"
+    }
+  ]
+}
 ```
-```json
 
-```
-```json
+#### Detailed Explanation:
+1. Keyword Field Sorting:
+    - Sorts by username in descending order
+    - Uses exact values (keyword type)
+    - Case sensitive
+    - Alphabetical order (Z to A)
 
+#### Equivalent SQL Query
+```sql
+SELECT *
+FROM shop
+WHERE description LIKE '%專門%'
+ORDER BY username DESC;
 ```
-```json
 
-```
+#### Key Points:
+- Username is a keyword field (not analyzed)
+- Exact string comparison
+- Descending order means:
+    - z comes before a
+    - zhangsan comes before lisi
+- More efficient than sorting on analyzed text fields
+
+
