@@ -1558,3 +1558,39 @@ ORDER BY username DESC;
 - Sorting: Use `nickname.keyword`
 
 
+### Elasticsearch Sort by Keyword Sub-field Explanation
+
+#### Query Structure
+```json
+{
+  "query": {
+    "match": {
+      "desc": "專門"
+    }
+  },
+  "sort": [
+    {
+      "nickname.keyword": "asc"
+    }
+  ]
+}
+```
+
+#### Detailed Explanation:
+1. Query Phase:
+    - Searches for "專門" in desc field
+    - Full-text search with analysis
+
+2. Sort Phase:
+    - Uses the keyword sub-field of nickname
+    - Sorts by exact string value
+    - Ascending order (A to Z)
+    - Case sensitive sorting
+
+#### Key Points:
+- `nickname.keyword`: References the keyword sub-field
+- Better for sorting than analyzed text field
+- Preserves original string for exact sorting
+- Useful for both Chinese and English characters
+- Maintains consistent sort order
+
