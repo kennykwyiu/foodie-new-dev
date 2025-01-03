@@ -1594,3 +1594,54 @@ ORDER BY username DESC;
 - Useful for both Chinese and English characters
 - Maintains consistent sort order
 
+### Elasticsearch Highlight Query Explanation
+
+#### Query Structure
+```json
+{
+  "query": {
+    "match": {
+      "desc": "專門"
+    }
+  },
+  "highlight": {
+    "pre_tags": ["<span>"],
+    "post_tags": ["</span>"],
+    "fields": {
+      "desc": {}
+    }
+  }
+}
+```
+
+#### Detailed Explanation:
+1. Query Phase:
+    - Searches for "專門" in desc field
+    - Performs full-text search
+
+2. Highlight Configuration:
+    - `pre_tags`: Opening HTML tag for highlighted text
+    - `post_tags`: Closing HTML tag for highlighted text
+    - `fields`: Specifies which fields to highlight
+    - Will wrap matched terms with `<span></span>`
+
+#### Example Result:
+```json
+{
+  "hits": {
+    "_source": {
+      "desc": "我是趙六，專門教授式交易系統開發"
+    },
+    "highlight": {
+      "desc": ["我是趙六，<span>專門</span>教授式交易系統開發"]
+    }
+  }
+}
+```
+
+#### Use Cases:
+- Search result highlighting
+- Visual feedback for matching terms
+- Improved user experience
+- Shows context of matches
+
