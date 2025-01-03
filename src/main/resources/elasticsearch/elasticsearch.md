@@ -1512,3 +1512,49 @@ ORDER BY username DESC;
 - More efficient than sorting on analyzed text fields
 
 
+### Elasticsearch Multi-Field Mapping Explanation
+
+#### Index Mapping Structure
+```json
+{
+  "properties": {
+    "id": {
+      "type": "long"
+    },
+    "nickname": {
+      "type": "text",
+      "analyzer": "ik_max_word",
+      "fields": {
+        "keyword": {
+          "type": "keyword"
+        }
+      }
+    }
+  }
+}
+```
+
+#### Field Explanations:
+
+1. `id` Field:
+    - Type: `long`
+    - For storing numeric IDs
+    - Supports range queries and sorting
+
+2. `nickname` Field:
+    - Primary mapping:
+        - Type: `text`
+        - Uses `ik_max_word` analyzer for Chinese text analysis
+        - Good for full-text search
+    - Sub-field `nickname.keyword`:
+        - Type: `keyword`
+        - Stores exact string value
+        - Good for aggregations and sorting
+        - Accessible via `nickname.keyword`
+
+#### Usage Examples:
+- Full-text search: Use `nickname`
+- Exact match: Use `nickname.keyword`
+- Sorting: Use `nickname.keyword`
+
+
