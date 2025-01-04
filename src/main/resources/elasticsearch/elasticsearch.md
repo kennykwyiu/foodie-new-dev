@@ -1645,3 +1645,44 @@ ORDER BY username DESC;
 - Improved user experience
 - Shows context of matches
 
+### Elasticsearch Match All Query with Pagination Explanation
+
+#### Endpoint
+```
+POST /shop/_search
+```
+
+#### Query Structure
+```json
+{
+  "query": {
+    "match_all": {}
+  },
+  "from": 0,
+  "size": 10
+}
+```
+
+#### Detailed Explanation:
+- `match_all`: Returns all documents in the index
+- `from`: Starting position (offset) of results
+- `size`: Maximum number of results to return
+
+#### Equivalent SQL Query
+```sql
+SELECT *
+FROM shop
+LIMIT 10 OFFSET 0;
+```
+
+#### Key Points:
+- Default sorting is by relevance score
+- First page of results (from: 0)
+- Returns maximum 10 documents
+- Most basic form of Elasticsearch query
+- Useful for:
+    - Testing index content
+    - Simple pagination
+    - Getting initial data sample
+
+
