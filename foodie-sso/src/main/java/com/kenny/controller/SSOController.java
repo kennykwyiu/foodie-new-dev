@@ -236,6 +236,23 @@ public class SSOController {
         return cookieValue;
     }
 
+    @PostMapping("/logout")
+    public JsonResult logout(String userId,
+                             HttpServletRequest request,
+                             HttpServletResponse response) throws NoSuchAlgorithmException {
+
+        String userTicket = getCookie(request, COOKIE_USER_TICKET);
+
+        deleteCookie(COOKIE_USER_TICKET, response);
+
+        redisOperator.del(REDIS_USER_TICKET + ":" + userTicket);
+
+        redisOperator.del(REDIS_USER_TOKEN + ":" + userId);
+
+        return JsonResult.ok();
+    }
+
+
     private void deleteCookie(String key,
                                 HttpServletResponse response) {
         Cookie cookie = new Cookie(key, null);
