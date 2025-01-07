@@ -1686,3 +1686,31 @@ LIMIT 10 OFFSET 0;
     - Getting initial data sample
 
 
+### Elasticsearch Match All Query with Offset Pagination
+
+#### Query Structure
+```json
+{
+  "query": {
+    "match_all": {}
+  },
+  "from": 30,
+  "size": 10
+}
+```
+
+#### Equivalent SQL Query
+```sql
+SELECT *
+FROM shop
+LIMIT 10 OFFSET 30;
+```
+
+#### Key Points:
+- Skips first 30 results
+- Returns results 31-40
+- Fourth page of results (assuming 10 per page)
+- Caution: Large offsets can be inefficient
+- Better to use search_after for deep pagination
+
+
