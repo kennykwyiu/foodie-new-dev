@@ -57,4 +57,12 @@ public class IPv4Utils {
         return ipAddress.toString();
     }
 
+    public static void main(String[] args) {
+        String s = "134.0.0.017";
+        long aLong = toLong(s);
+        System.out.println(aLong);
+
+        System.out.println(toString(aLong));
+    }
+
 }
