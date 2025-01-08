@@ -1714,3 +1714,37 @@ LIMIT 10 OFFSET 30;
 - Better to use search_after for deep pagination
 
 
+### Elasticsearch Settings with Defaults Explanation
+
+#### Endpoint
+```
+GET /shop/_settings?include_defaults=true
+```
+
+#### Purpose:
+- Shows all index settings including defaults
+- Displays both custom and system default values
+- Useful for understanding complete index configuration
+
+#### Key Settings Usually Shown:
+1. Index Settings:
+    - `number_of_shards`
+    - `number_of_replicas`
+    - `max_result_window` (default: 10000)
+    - `refresh_interval`
+
+2. Analysis Settings:
+    - Default analyzers
+    - Custom analyzers
+    - Token filters
+
+3. Allocation Settings:
+    - Tier preference
+    - Routing rules
+    - Shard allocation
+
+4. Other Defaults:
+    - Query limits
+    - Mapping limits
+    - Index metadata
+
