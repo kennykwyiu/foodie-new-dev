@@ -1748,3 +1748,33 @@ GET /shop/_settings?include_defaults=true
     - Mapping limits
     - Index metadata
 
+### Elasticsearch Update Max Result Window Setting
+
+#### Endpoint
+```
+PUT /shop/_settings
+```
+
+#### Request Body
+```json
+{
+  "index.max_result_window": 20000
+}
+```
+
+#### Explanation:
+- Updates maximum number of results that can be returned
+- Default value is 10000
+- New setting allows up to 20000 results
+- Affects pagination limits
+- Impacts from/size query parameters
+
+#### Important Notes:
+- Increasing beyond 10000 can:
+    - Impact performance
+    - Increase memory usage
+    - Slow down queries
+- Consider using search_after for deep pagination
+- Changes take effect immediately
+
+
