@@ -57,7 +57,7 @@ public class HttpReq {
             if (status == 200) {
                 return readResponseBody(http, charset);
             } else {
-                logger.warn("non 200 respoonse :" + readErrorResponseBody(http, status, charset));
+                logger.warn("non 200 response :" + readErrorResponseBody(http, status, charset));
                 return null;
             }
         } catch (Exception e) {
