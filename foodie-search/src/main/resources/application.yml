@@ -1,0 +1,11 @@
+spring:
+  datasource: # Data source related configuration
+    type: com.zaxxer.hikari.HikariDataSource          # Data source type: HikariCP
+    driver-class-name: com.mysql.jdbc.Driver          # MySQL Driver
+    url: jdbc:mysql://localhost:3306/foodie-shop-dev?useSSL=false&useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
+    username: "username"
+    password: "password"
+  data:
+    elasticsearch:
+      cluster-nodes: 192.168.74.138:9300
+      cluster-name: es6
