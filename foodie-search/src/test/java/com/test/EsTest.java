@@ -13,4 +13,8 @@ public class EsTest {
     @Autowired
     private ElasticsearchTemplate esTemplate;
 
+
+    public void createIndexStu() {
+
+    }
 }
