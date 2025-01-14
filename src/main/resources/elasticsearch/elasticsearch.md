@@ -1778,3 +1778,48 @@ PUT /shop/_settings
 - Changes take effect immediately
 
 
+### Elasticsearch Scroll API Explanation
+
+#### Endpoint
+```
+POST /shop/_search?scroll=1m
+```
+
+#### Query Structure
+```json
+{
+  "query": {
+    "match_all": {},
+  },
+  "sort": ["_doc"],
+  "size": 5
+}
+```
+
+#### Detailed Explanation:
+1. Scroll Parameters:
+    - `scroll=1m`: Keeps search context alive for 1 minute
+    - `size`: Returns 5 documents per batch
+    - `sort`: ["_doc"] most efficient sort order for scrolling
+
+2. Usage:
+    - Returns first batch of results
+    - Includes a scroll_id for next batch
+    - Must use scroll_id to get subsequent batches
+    - Good for processing large result sets
+
+#### Example Next Request:
+POST /_search/scroll
+```json
+{
+  "scroll": "1m",
+  "scroll_id": "<scroll_id_from_previous_response>"
+}
+```
+
+#### Benefits over From/Size:
+- Memory efficient
+- Consistent results
+- Good for large datasets
+- No 10k document limit
+
