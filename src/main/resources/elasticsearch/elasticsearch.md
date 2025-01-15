@@ -1823,3 +1823,40 @@ POST /_search/scroll
 - Good for large datasets
 - No 10k document limit
 
+### Elasticsearch Multi Get (mget) API Explanation
+
+#### Endpoint
+```
+POST /shop/_mget
+```
+
+#### Query Structure
+```json
+{
+  "ids": [
+    "1001",
+    "1003"
+  ]
+}
+```
+
+#### Detailed Explanation:
+- Retrieves multiple documents in a single request
+- Fetches documents by their IDs
+- More efficient than multiple GET requests
+- Returns documents in order of requested IDs
+
+#### Equivalent SQL Query
+```sql
+SELECT *
+FROM shop
+WHERE id IN ('1001', '1003');
+```
+
+#### Key Benefits:
+- Reduces network roundtrips
+- Batch retrieval of documents
+- Maintains order of requested documents
+- Better performance than individual gets
+- Works across multiple indices if needed
+
