@@ -1860,3 +1860,29 @@ WHERE id IN ('1001', '1003');
 - Better performance than individual gets
 - Works across multiple indices if needed
 
+### Elasticsearch Bulk API Example
+
+#### Endpoint
+```
+POST /_bulk
+```
+
+#### Request Body
+```json
+{"create": {"_index": "shop2", "_type": "_doc", "_id": "2001"}}
+{"id": "2001", "nickname": "name2001"}
+{"create": {"_index": "shop2", "_type": "_doc", "_id": "2002"}}
+{"id": "2002", "nickname": "name2002"}
+{"create": {"_index": "shop2", "_type": "_doc", "_id": "2003"}}
+{"id": "2003", "nickname": "name2003"}
+```
+
+#### Key Points:
+- Each operation requires two lines:
+    1. Action metadata line
+    2. Request body line
+- No commas between lines
+- Each line must end with newline character (\n)
+- Bulk operations are faster than individual requests
+- Can combine different operations (create/update/delete)
+
