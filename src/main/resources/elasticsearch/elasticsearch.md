@@ -1886,3 +1886,26 @@ POST /_bulk
 - Bulk operations are faster than individual requests
 - Can combine different operations (create/update/delete)
 
+### Elasticsearch Bulk API Error Explanation
+
+#### Current Format (Incorrect)
+```json
+{"create": {"_index": "shop2", "_id": "2001"}}{"id": "2001", "nickname": "name2001"}{"create": {"_index": "shop2", "_id": "2002"}}{"id": "2002", "nickname": "name2002"}{"create": {"_index": "shop2", "_id": "2003"}}{"id": "2003", "nickname": "name2003"}
+```
+
+#### Correct Format (Each line must end with newline)
+```json
+{"create": {"_index": "shop2", "_id": "2001"}}
+{"id": "2001", "nickname": "name2001"}
+{"create": {"_index": "shop2", "_id": "2002"}}
+{"id": "2002", "nickname": "name2002"}
+{"create": {"_index": "shop2", "_id": "2003"}}
+{"id": "2003", "nickname": "name2003"}
+```
+
+#### Key Requirements:
+- Each action and its corresponding data must be on separate lines
+- Each line must end with a newline character (\n)
+- No spaces or commas between lines
+- Content-Type header should be 'application/x-ndjson'
+
