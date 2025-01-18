@@ -1909,3 +1909,27 @@ POST /_bulk
 - No spaces or commas between lines
 - Content-Type header should be 'application/x-ndjson'
 
+### Elasticsearch Bulk API with Index in URL Explanation
+
+#### Endpoint
+```
+POST /shop2/_bulk
+```
+
+#### Correct Format (Each line must end with newline)
+```json
+{"create": { "_id": "2004"}}
+{"id": "2004", "nickname": "name2004"}
+{"create": { "_id": "2005"}}
+{"id": "2005", "nickname": "name2005"}
+{"create": { "_id": "2003"}}
+{"id": "2003", "nickname": "name2003"}
+```
+
+#### Key Points:
+- Index name (shop2) is specified in URL
+- No need to specify _index in action metadata
+- Each operation still needs two lines
+- Must have newline characters between operations
+- No spaces or commas between lines
+
