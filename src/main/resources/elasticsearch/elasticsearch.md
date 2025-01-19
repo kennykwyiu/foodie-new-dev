@@ -1933,3 +1933,38 @@ POST /shop2/_bulk
 - Must have newline characters between operations
 - No spaces or commas between lines
 
+### Elasticsearch Bulk Index Operation Response Explanation
+
+#### Request (Bulk Index Operations)
+```json
+{"index": { "_id": "2004"}} 
+{"id": "2004", "nickname": "index2004"}
+{"index": { "_id": "2007"}}
+{"id": "2007", "nickname": "name2007"}
+{"index": { "_id": "2008"}}
+{"id": "2008", "nickname": "name2008"}
+```
+
+#### Response Analysis
+1. Overall Status:
+    - `errors`: false (all operations successful)
+    - `took`: 367ms (total processing time)
+
+2. Individual Results:
+    - Document 2004:
+        - Status: 200 (OK)
+        - Result: "updated" (document already existed)
+        - Version: 2 (second version of document)
+
+    - Documents 2007 & 2008:
+        - Status: 201 (Created)
+        - Result: "created" (new documents)
+        - Version: 1 (first version)
+
+#### Key Points:
+- `index` operation creates or updates documents
+- Different from `create` which only creates new documents
+- Status 200 indicates update
+- Status 201 indicates new creation
+- Successful shards indicate replication status
+
