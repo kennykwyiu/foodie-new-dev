@@ -1968,3 +1968,32 @@ POST /shop2/_bulk
 - Status 201 indicates new creation
 - Successful shards indicate replication status
 
+### Elasticsearch Bulk Update Operations Explanation
+
+#### Request Format
+```json
+{"update": { "_id": "2004"}}
+{"doc": { "id": "3304"}}
+{"update": { "_id": "2007"}}
+{"doc": {"nickname": "nameupdate"}}
+```
+
+#### Explanation:
+1. First Update Operation:
+    - Updates document with ID "2004"
+    - Changes the "id" field to "3304"
+    - Partial update (other fields remain unchanged)
+
+2. Second Update Operation:
+    - Updates document with ID "2007"
+    - Changes the "nickname" field to "nameupdate"
+    - Partial update (other fields remain unchanged)
+
+#### Key Points:
+- `update` operation allows partial document updates
+- `doc` specifies the fields to update
+- Each update requires two lines:
+    1. Update action metadata
+    2. Update document data
+- Must include newline characters between lines
+
