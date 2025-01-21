@@ -1997,3 +1997,27 @@ POST /shop2/_bulk
     2. Update document data
 - Must include newline characters between lines
 
+### Elasticsearch Bulk Delete Operations Explanation
+
+#### Request Format
+```json
+{"delete": { "_id": "2004"}}
+{"delete": { "_id": "2007"}}
+```
+
+#### Explanation:
+1. First Delete Operation:
+    - Deletes document with ID "2004"
+    - No second line needed for delete operations
+
+2. Second Delete Operation:
+    - Deletes document with ID "2007"
+    - No second line needed for delete operations
+
+#### Key Points:
+- `delete` operation only requires one line per document
+- No document body needed for delete operations
+- Multiple deletes can be combined in one bulk request
+- Each delete line must end with newline character
+- More efficient than individual delete requests
+
