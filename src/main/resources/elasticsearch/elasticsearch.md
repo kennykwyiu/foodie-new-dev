@@ -2021,3 +2021,39 @@ POST /shop2/_bulk
 - Each delete line must end with newline character
 - More efficient than individual delete requests
 
+### Elasticsearch Mixed Bulk Operations Explanation
+
+#### Request Format
+```json
+{"delete": { "_id": "2001"}}
+{"delete": { "_id": "2003"}}
+{"create": {"_index": "shop2", "_id": "8008"}}
+{"id": "2001", "nickname": "name8008"}
+{"update": { "_id": "2002"}}
+{"doc":{"id": "2222"}}
+```
+
+#### Operations Breakdown:
+1. Delete Operations:
+    - Delete document ID "2001"
+    - Delete document ID "2003"
+    - Single line per delete operation
+
+2. Create Operation:
+    - Create new document with ID "8008"
+    - Contains id and nickname fields
+    - Requires two lines (metadata + data)
+
+3. Update Operation:
+    - Update document ID "2002"
+    - Changes id field to "2222"
+    - Partial update with doc parameter
+
+#### Key Points:
+- Multiple operation types in one bulk request
+- Each operation follows its own format rules
+- Delete: one line only
+- Create/Update: requires two lines
+- More efficient than separate API calls
+
+
