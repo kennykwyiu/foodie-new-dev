@@ -45,17 +45,25 @@ public class EsTest {
      * 1. Field type properties are not flexible
      * 2. Unable to set the number of primary and replica shards
      */
+//    @Test
+//    public void createIndexStu() {
+//        Stu stu = new Stu();
+//        stu.setStuId(1002L);
+//        stu.setName("Spider man");
+//        stu.setAge(22);
+//        stu.setMoney(18.8f);
+//        stu.setSign("I am spider man");
+//        stu.setDescription("I wish I am spider man");
+//        IndexQuery indexQuery = new IndexQueryBuilder().withObject(stu).build();
+//        esTemplate.index(indexQuery);
+//    }
+
+
     @Test
-    public void createIndexStu() {
-        Stu stu = new Stu();
-        stu.setStuId(1002L);
-        stu.setName("Spider man");
-        stu.setAge(22);
-        stu.setMoney(18.8f);
-        stu.setSign("I am spider man");
-        stu.setDescription("I wish I am spider man");
-        IndexQuery indexQuery = new IndexQueryBuilder().withObject(stu).build();
-        esTemplate.index(indexQuery);
+    public void deleteIndexStu() {
+        esTemplate.deleteIndex(Stu.class);
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////
 
 }
