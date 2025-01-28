@@ -66,4 +66,26 @@ public class EsTest {
 
     //////////////////////////////////////////////////////////////////////////////////////
 
+    @Test
+    public void updateStuDoc() {
+
+        Map<String, Object> sourceMap = new HashMap<>();
+        sourceMap.put("sign", "I am not super man");
+        sourceMap.put("money", 88.6f);
+        sourceMap.put("age", 33);
+
+        IndexRequest indexRequest = new IndexRequest();
+        indexRequest.source(sourceMap);
+
+        UpdateQuery updateQuery = new UpdateQueryBuilder()
+                .withClass(Stu.class)
+                .withId("1002")
+                .withIndexRequest(indexRequest)
+                .build();
+
+        // update stu set sign='abc',age=33,money=88.6 where docId='1002'
+        esTemplate.update(updateQuery);
+    }
+
+  
 }
