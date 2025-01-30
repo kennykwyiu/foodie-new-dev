@@ -94,6 +94,9 @@ public class EsTest {
         System.out.println(stu);
     }
 
+    @Test
+    public void deleteStuDoc() {
+        esTemplate.delete(Stu.class, "1002");
+    }
 
-  
 }
