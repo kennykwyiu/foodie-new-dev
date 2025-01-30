@@ -86,6 +86,14 @@ public class EsTest {
         // update stu set sign='abc',age=33,money=88.6 where docId='1002'
         esTemplate.update(updateQuery);
     }
+    @Test
+    public void getStuDoc() {
+        GetQuery query = new GetQuery();
+        query.setId("1002");
+        Stu stu = esTemplate.queryForObject(query, Stu.class);
+        System.out.println(stu);
+    }
+
 
   
 }
