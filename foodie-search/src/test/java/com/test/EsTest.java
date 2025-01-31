@@ -99,4 +99,23 @@ public class EsTest {
         esTemplate.delete(Stu.class, "1002");
     }
 
+// ------------------------- Dividing Line --------------------------------
+
+    @Test
+    public void searchStuDoc() {
+        // Create pagination with page 0 and size 2
+        Pageable pageable = PageRequest.of(0, 2);
+        SearchQuery query = new NativeSearchQueryBuilder()
+                .withQuery(QueryBuilders.matchQuery("description", "save man"))
+                .withPageable(pageable)
+                .build();
+        AggregatedPage<Stu> pagedStu = esTemplate.queryForPage(query, Stu.class);
+        System.out.println("Total number of pages after search: " + pagedStu.getTotalPages());
+        List<Stu> stuList = pagedStu.getContent();
+        for (Stu s : stuList) {
+            System.out.println(s);
+        }
+    }
+
+
 }
