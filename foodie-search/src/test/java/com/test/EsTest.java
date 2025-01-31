@@ -117,5 +117,70 @@ public class EsTest {
         }
     }
 
+    @Test
+    public void highlightStuDoc() {
+        String preTag = "<font color='red'>";
+        String postTag = "</font>";
+        Pageable pageable = PageRequest.of(0, 10);
+
+        // Sort by money descending and age ascending
+        SortBuilder sortBuilder = new FieldSortBuilder("money")
+                .order(SortOrder.DESC);
+        SortBuilder sortBuilderAge = new FieldSortBuilder("age")
+                .order(SortOrder.ASC);
+
+        // Build search query with highlighting
+        SearchQuery query = new NativeSearchQueryBuilder()
+                .withQuery(QueryBuilders.matchQuery("description", "save man"))
+                .withHighlightFields(new HighlightBuilder.Field("description")
+                        .preTags(preTag)
+                        .postTags(postTag))
+                .withSort(sortBuilder)
+                .withSort(sortBuilderAge)
+                .withPageable(pageable)
+                .build();
+
+        // Execute search with custom result mapping
+        AggregatedPage<Stu> pagedStu = esTemplate.queryForPage(query, Stu.class, new SearchResultMapper() {
+            @Override
+            public <T> AggregatedPage<T> mapResults(SearchResponse response, Class<T> clazz, Pageable pageable) {
+                List<Stu> stuListHighlight = new ArrayList<>();
+                SearchHits hits = response.getHits();
+
+                for (SearchHit h : hits) {
+                    HighlightField highlightField = h.getHighlightFields().get("description");
+                    String description = highlightField.getFragments()[0].toString();
+
+                    // Extract fields from search hit
+                    Object stuId = (Object)h.getSourceAsMap().get("stuId");
+                    String name = (String)h.getSourceAsMap().get("name");
+                    Integer age = (Integer)h.getSourceAsMap().get("age");
+                    String sign = (String)h.getSourceAsMap().get("sign");
+                    Object money = (Object)h.getSourceAsMap().get("money");
+
+                    // Create new Stu object with highlighted description
+                    Stu stuHL = new Stu();
+                    stuHL.setDescription(description);
+                    stuHL.setStuId(Long.valueOf(stuId.toString()));
+                    stuHL.setName(name);
+                    stuHL.setAge(age);
+                    stuHL.setSign(sign);
+                    stuHL.setMoney(Float.valueOf(money.toString()));
+                    stuListHighlight.add(stuHL);
+                }
+
+                if (stuListHighlight.size() > 0) {
+                    return new AggregatedPageImpl<>((List<T>)stuListHighlight);
+                }
+                return null;
+            }
+        });
+
+        System.out.println("Total number of pages after search: " + pagedStu.getTotalPages());
+        List<Stu> stuList = pagedStu.getContent();
+        for (Stu s : stuList) {
+            System.out.println(s);
+        }
+    }
 
 }
