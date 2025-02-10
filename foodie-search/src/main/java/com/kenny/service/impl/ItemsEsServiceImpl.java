@@ -49,8 +49,17 @@ public class ItemsEsServiceImpl implements ItemsEsService {
         SearchQuery query = new NativeSearchQueryBuilder()
                 .withQuery(QueryBuilders.matchQuery(itemNameField, keywords))
                 .withHighlightFields(new HighlightBuilder.Field(itemNameField)
+                        /*
+                        // change to define style in front-end with <em>
+                        em {
+                            color : green;
+                            font-weight: bold;
+                        }
                         .preTags(preTag)
-                        .postTags(postTag))
+                        .postTags(postTag)
+                        */
+                        )
+
 //                .withSort(sortBuilder)
 //                .withSort(sortBuilderAge)
                 .withPageable(pageable)
