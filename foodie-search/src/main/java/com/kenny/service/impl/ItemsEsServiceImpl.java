@@ -9,6 +9,9 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
+import org.elasticsearch.search.sort.FieldSortBuilder;
+import org.elasticsearch.search.sort.SortBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -39,6 +42,18 @@ public class ItemsEsServiceImpl implements ItemsEsService {
         Pageable pageable = PageRequest.of(page, pageSize);
 
         // Sort by money descending and age ascending
+        SortBuilder sortBuilder = null;
+        if (sort.equals("c")) {
+            sortBuilder = new FieldSortBuilder("sellCounts")
+                    .order(SortOrder.DESC);
+        } else if (sort.equals("p")) {
+            sortBuilder = new FieldSortBuilder("price")
+                .order(SortOrder.ASC);
+        } else { // default
+            sortBuilder = new FieldSortBuilder("itemName")
+                    .order(SortOrder.ASC);
+        }
+
 //        SortBuilder sortBuilder = new FieldSortBuilder("money")
 //                .order(SortOrder.DESC);
 //        SortBuilder sortBuilderAge = new FieldSortBuilder("age")
@@ -60,7 +75,7 @@ public class ItemsEsServiceImpl implements ItemsEsService {
                         */
                         )
 
-//                .withSort(sortBuilder)
+                .withSort(sortBuilder)
 //                .withSort(sortBuilderAge)
                 .withPageable(pageable)
                 .build();
